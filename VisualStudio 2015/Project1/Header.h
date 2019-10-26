@@ -13,76 +13,76 @@ void __stdcall FreeHeap(LPVOID lpMem);
 int __stdcall GetSystemVolumes(void *); // idb
 int __stdcall CreateSomeFiles(LPCSTR lpFileName, int); // idb
 int __stdcall CreateFileSetFP(LPCSTR lpFileName, void *Dst); // idb
-															 // int __userpurge CheckIfFileExists@<eax>(int a1@<eax>, LPCSTR lpFileName, LPCVOID lpBuffer);
+ int  CheckIfFileExists(int a1, LPCSTR lpFileName, LPCVOID lpBuffer);
 int __stdcall CryptoAcquireContext(BYTE *pbBuffer, DWORD dwLen); // idb
-int RunCryptWriteMBR();
-HANDLE __stdcall WriteFileMapping(LPCWSTR lpFileName, int a2);
-void __stdcall EnumerateFiles(LPCWSTR pszDir, int a2, int a3);
-// BOOL __usercall CryptoGenerateKey@<eax>(int a1@<eax>);
+int RunCryptWriteMBR();//
+HANDLE __stdcall WriteFileMapping(LPCWSTR lpFileName, int a2);//
+void __stdcall EnumerateFiles(LPCWSTR pszDir, int a2, int a3);//
+bool  CryptoGenerateKey(int a1);
 BOOL __stdcall ImportPubKey(int a1);
-// HLOCAL __usercall CryptoExportKey@<eax>(int a1@<eax>);
+HLOCAL  CryptoExportKey(int a1);
 HLOCAL __stdcall GenerateReadMeMessage(LPCWSTR pszDir);
 DWORD __stdcall CryptoCleanUp(LPVOID lpThreadParameter); // idb
-signed int CheckDriveAndPubKey();
+_DWORD *CheckDriveAndPubKey();
 bool __stdcall GetHeapAndMoveData(void *a1, size_t a2, void *Src, size_t Size, void *a5, size_t a6, int a7, int a8, void *a9, int a10, void *a11, int a12);
-// int __usercall SockCloseConnection@<eax>(SOCKET *a1@<eax>);
+int  SockCloseConnection(SOCKET *a1);
 BOOL __stdcall Dummy_StackSettup(__int64 a1);
 signed int CheckIfTimePassed();
-// BOOL __usercall GetAndFreeHeap@<eax>(BOOL *a1@<esi>);
-// signed int __userpurge Unk_FindResourceAndIterate@<eax>(int a1@<esi>, __m64 mm0_0@<mm0>, __m64 mm1_0@<mm1>, _DWORD *a2, int a3, char a4);
-// char __userpurge Unk_SockChecks@<al>(int a1@<eax>, unsigned __int16 a2);
-// int __userpurge SockreceivData@<eax>(__int16 *a1@<esi>, SOCKET s, char a3, char a4);
+// BOOL __usercall GetAndFreeHeap(BOOL *a1);
+int __userpurge Unk_FindResourceAndIterate(int a1, __m64 mm0_0, __m64 mm1_0, _DWORD *a2, int a3, char a4);
+char __userpurge Unk_SockChecks(int a1, unsigned __int16 a2);
+int __userpurge SockreceivData(__int16 *a1, SOCKET s, char a3, char a4);
 _WORD *__stdcall Unk_SetIpAddress(__int16 a1, char a2, __int16 a3, __int16 a4, __int16 a5, __int16 a6, __int16 a7, __int16 a8);
 LPVOID __fastcall sub_73C224D0(int a1, _WORD *a2, void *Src);
-// _WORD *__userpurge sub_73C22547@<eax>(_WORD *a1@<eax>, __int16 a2, __int16 a3, __int16 a4, __int16 a5, _WORD *a6);
+// _WORD *__userpurge sub_73C22547(_WORD *a1, __int16 a2, __int16 a3, __int16 a4, __int16 a5, _WORD *a6);
 _BYTE *__stdcall Unk_ReturnByteArrayOfUnk_Exe(__int16 a1, __int16 a2, __int16 a3, __int16 a4, __int16 a5, _WORD *a6);
-// _BYTE *__userpurge ProcessHeaps_1@<eax>(_WORD *a1@<eax>, __int16 a2, __int16 a3, __int16 a4, _WORD *a5);
-// LPVOID __userpurge CreateHeapAndMalloc@<eax>(_WORD *a1@<ecx>, unsigned __int16 a2@<di>, void *Src, char a4, __int16 a5, __int16 a6);
-// _WORD *__userpurge sub_73C228B5@<eax>(char a1@<al>, __int16 a2, __int16 a3, __int16 a4, __int16 a5, BOOL a6, void *Src, _WORD *a8);
-// _BYTE *__userpurge sub_73C229CE@<eax>(_WORD *a1@<eax>, __int16 a2, __int16 a3, __int16 a4, _WORD *a5);
-// LPVOID __userpurge sub_73C22ADF@<eax>(_WORD *a1@<eax>, __int16 a2@<dx>, __int16 a3@<cx>, char a4, char a5);
+// _BYTE *__userpurge ProcessHeaps_1(_WORD *a1, __int16 a2, __int16 a3, __int16 a4, _WORD *a5);
+// LPVOID __userpurge CreateHeapAndMalloc(_WORD *a1@<ecx>, unsigned __int16 a2, void *Src, char a4, __int16 a5, __int16 a6);
+// _WORD *__userpurge sub_73C228B5(char a1@<al>, __int16 a2, __int16 a3, __int16 a4, __int16 a5, BOOL a6, void *Src, _WORD *a8);
+// _BYTE *__userpurge sub_73C229CE(_WORD *a1, __int16 a2, __int16 a3, __int16 a4, _WORD *a5);
+// LPVOID __userpurge sub_73C22ADF(_WORD *a1, __int16 a2@<dx>, __int16 a3@<cx>, char a4, char a5);
 void *__fastcall sub_73C22C1E(__int16 cx0, __int16 dx0, int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, void *Src);
 LPVOID __thiscall sub_73C22CCF(void *a1, int a2, int a3, void *Src, int a5);
 LPVOID __thiscall sub_73C22D82(void *a1, char a2);
-// LPVOID __userpurge sub_73C22E30@<eax>(_WORD *a1@<ebx>, unsigned __int16 a2@<di>, char a3, __int16 a4, void *Src);
-// signed int __userpurge SockSendRecvDataFreeHeap@<eax>(SOCKET a1@<eax>, __int16 a2, LPVOID a3, int a4, _WORD *a5);
-// signed int __userpurge SockProcessSendRecv_2@<eax>(SOCKET a1@<eax>, __int16 a2, __int16 a3, __int16 a4, _WORD *a5, LPVOID a6, char *a7, int a8, void *a9, _DWORD *a10, _WORD *a11);
-// signed int __userpurge sub_73C23061@<eax>(SOCKET a1@<eax>, __int16 a2, _WORD *a3, LPVOID a4, int a5, char *a6);
+// LPVOID __userpurge sub_73C22E30(_WORD *a1, unsigned __int16 a2, char a3, __int16 a4, void *Src);
+// signed int __userpurge SockSendRecvDataFreeHeap(SOCKET a1, __int16 a2, LPVOID a3, int a4, _WORD *a5);
+// signed int __userpurge SockProcessSendRecv_2(SOCKET a1, __int16 a2, __int16 a3, __int16 a4, _WORD *a5, LPVOID a6, char *a7, int a8, void *a9, _DWORD *a10, _WORD *a11);
+// signed int __userpurge sub_73C23061(SOCKET a1, __int16 a2, _WORD *a3, LPVOID a4, int a5, char *a6);
 int __stdcall SocketUseSocket1(SOCKET s, int, int, int, int, int); // idb
 int __stdcall SocketUseSocket2(SOCKET s, int, int, int, int, int); // idb
 int __stdcall sub_73C2330E(SOCKET s, int, int, int, int, int, int, int, void *Src, int, int, int, int); // idb
 int __stdcall sub_73C23469(SOCKET s, int, int, int, int, int, void *, void *Src, int); // idb
-																					   // signed int __userpurge sub_73C235FA@<eax>(SOCKET a1@<eax>, __int16 a2@<dx>, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10, __int16 a11);
-																					   // signed int __userpurge sub_73C2369D@<eax>(SOCKET a1@<eax>, __int16 a2, __int16 a3, LPVOID a4, int a5, char *a6);
+																					   // signed int __userpurge sub_73C235FA(SOCKET a1, __int16 a2@<dx>, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10, __int16 a11);
+																					   // signed int __userpurge sub_73C2369D(SOCKET a1, __int16 a2, __int16 a3, LPVOID a4, int a5, char *a6);
 int __stdcall SockProcessSendRecv(SOCKET s, int, int, int, int, int, int, void *Src); // idb
-																					  // int __userpurge sub_73C23863@<eax>(unsigned __int16 a1@<ax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, BOOL a8, BOOL a9, void *Src);
-																					  // int __userpurge sub_73C23986@<eax>(unsigned __int16 a1@<ax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, void *a8, int a9, void *Src, int a11, int a12, int a13);
+																					  // int __userpurge sub_73C23863(unsigned __int16 a1@<ax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, BOOL a8, BOOL a9, void *Src);
+																					  // int __userpurge sub_73C23986(unsigned __int16 a1@<ax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, void *a8, int a9, void *Src, int a11, int a12, int a13);
 int __stdcall sub_73C23B5D(SOCKET s, int, int, int, int, int); // idb
 int __stdcall sub_73C23C0A(SOCKET s, int, int, int, int, int); // idb
-															   // signed int __userpurge sub_73C23CA0@<eax>(char a1@<al>, SOCKET a2);
+															   // signed int __userpurge sub_73C23CA0(char a1@<al>, SOCKET a2);
 int __stdcall CreateAndGetHeap(SOCKET s, int, int, int, int, int, int, int, int, int, int, int); // idb
-																								 // int __userpurge sub_73C23EC8@<eax>(char *a1@<eax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8);
-																								 // int __userpurge sub_73C2407B@<eax>(_WORD *a1@<edi>, SOCKET s, int a3, int a4, int a5, int a6, int a7);
+																								 // int __userpurge sub_73C23EC8(char *a1, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8);
+																								 // int __userpurge sub_73C2407B(_WORD *a1, SOCKET s, int a3, int a4, int a5, int a6, int a7);
 int __stdcall sub_73C242DF(SOCKET s, int, int, int, int, int, int); // idb
-																	// signed int __userpurge sub_73C24820@<eax>(void *a1@<eax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10);
-																	// int __userpurge sub_73C2489C@<eax>(_WORD *a1@<eax>, _WORD *a2@<ecx>, SOCKET s, int a4, int a5, int a6, __int16 a7);
+																	// signed int __userpurge sub_73C24820(void *a1, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8, int a9, int a10);
+																	// int __userpurge sub_73C2489C(_WORD *a1, _WORD *a2@<ecx>, SOCKET s, int a4, int a5, int a6, __int16 a7);
 int __stdcall sub_73C24AFE(SOCKET s, int, int, int, int, int, int, void *Src, int, int, int, int); // idb
 int __stdcall sub_73C24BA1(SOCKET s, int, int, int, int, int); // idb
-															   // signed int __userpurge sub_73C24C1C@<eax>(int a1@<eax>, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8, __int64 a9, unsigned __int16 a10, _DWORD *a11, _WORD *a12);
-															   // signed int __userpurge sub_73C24FB3@<eax>(int a1@<edx>, int a2@<esi>, __int64 a3);
-															   // signed int __userpurge sub_73C2501B@<eax>(int a1@<eax>, int a2@<ecx>, __int64 a3);
+															   // signed int __userpurge sub_73C24C1C(int a1, SOCKET s, int a3, int a4, int a5, int a6, int a7, int a8, __int64 a9, unsigned __int16 a10, _DWORD *a11, _WORD *a12);
+															   // signed int __userpurge sub_73C24FB3(int a1@<edx>, int a2, __int64 a3);
+															   // signed int __userpurge sub_73C2501B(int a1, int a2@<ecx>, __int64 a3);
 signed int __stdcall sub_73C250E0(SOCKET a1, int a2, int a3, int a4, int a5, int a6, __int64 a7, unsigned __int16 a8);
-// signed int __userpurge sub_73C251F3@<eax>(int a1@<edi>, SOCKET a2, int a3, int a4, int a5, int a6);
-// signed int __userpurge sub_73C25333@<eax>(int a1@<ebx>, SOCKET s, int a3, int a4, int a5, int a6, int a7, void *Src);
+// signed int __userpurge sub_73C251F3(int a1, SOCKET a2, int a3, int a4, int a5, int a6);
+// signed int __userpurge sub_73C25333(int a1, SOCKET s, int a3, int a4, int a5, int a6, int a7, void *Src);
 int __stdcall SocketUseSockets(int, SOCKET s, int, int, int, int, int); // idb
-																		// int __userpurge sub_73C25A7E@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, char *cp, u_short hostshort, int a6, int a7, int a8, int a9, int a10, int a11, int a12);
-																		// int __userpurge sub_73C2668A@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, char *cp, int a4, int a5, int a6, int a7, int a8, int a9);
-																		// int __userpurge SocketCreateAndConnect@<eax>(unsigned __int8 *a1@<ebx>, int a2, char *cp, u_short hostshort);
-																		// int __userpurge SockGetData@<eax>(char **a1@<ebx>, __int16 *a2@<esi>, SOCKET s, char a4, int a5);
-																		// int __userpurge SockSendBuffer@<eax>(SOCKET a1@<ebx>, char *buf, int len);
+																		// int __userpurge sub_73C25A7E(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, char *cp, u_short hostshort, int a6, int a7, int a8, int a9, int a10, int a11, int a12);
+																		// int __userpurge sub_73C2668A(__m64 a1@<mm0>, __m64 a2@<mm1>, char *cp, int a4, int a5, int a6, int a7, int a8, int a9);
+																		// int __userpurge SocketCreateAndConnect(unsigned __int8 *a1, int a2, char *cp, u_short hostshort);
+																		// int __userpurge SockGetData(char **a1, __int16 *a2, SOCKET s, char a4, int a5);
+																		// int __userpurge SockSendBuffer(SOCKET a1, char *buf, int len);
 int __stdcall ConvertHeapMToWBytes(LPCSTR lpMultiByteStr); // idb
 DWORD ReturnTimeIfTimePassed();
-// signed int __usercall CheckUsrArgs@<eax>(int a1@<eax>);
+// signed int __usercall CheckUsrArgs(int a1);
 int __stdcall CheckCmdLineArgs(LPCWSTR lpCmdLine); // idb
 int GeneratePath();
 int __stdcall sub_73C26BB0(_WORD *a1);
@@ -91,22 +91,22 @@ void __stdcall CleanUpHeaps_3(int a1);
 int __stdcall CleanUpHeaps_2(void *Src, void *); // idb
 int __stdcall CleanUpHeaps(void *Src, void *, int); // idb
 int __stdcall CompareStringsW(int a1, int a2, int a3);
-// int __userpurge LaunchCrit3@<eax>(int a1@<ebx>, struct _RTL_CRITICAL_SECTION *a2@<esi>, __int16 *a3);
+// int __userpurge LaunchCrit3(int a1, struct _RTL_CRITICAL_SECTION *a2, __int16 *a3);
 _DWORD *__thiscall SomeHeapCleanupFunct(struct _RTL_CRITICAL_SECTION *a1, __int16 *a2);
 int __stdcall EnumProcessHeap(LPVOID lpMem); // idb
 int __thiscall CheckCritSection(void *a1, struct _RTL_CRITICAL_SECTION *a2, int *a3);
-// int __userpurge sub_73C26FC7@<eax>(char *a1@<eax>, int a2@<esi>, struct _RTL_CRITICAL_SECTION *lpCriticalSection);
-// void __usercall EnterAndLeaveCritSection_5(int a1@<esi>);
+// int __userpurge sub_73C26FC7(char *a1, int a2, struct _RTL_CRITICAL_SECTION *lpCriticalSection);
+// void __usercall EnterAndLeaveCritSection_5(int a1);
 struct _RTL_CRITICAL_SECTION *__stdcall sub_73C27091(LONG a1, ULONG_PTR a2, _RTL_CRITICAL_SECTION_DEBUG *a3, LONG a4);
-// signed int __usercall EnterAndLeaveCritSection_4@<eax>(int a1@<esi>);
-// _DWORD *__userpurge GetHeapAndFreeIt@<eax>(struct _RTL_CRITICAL_SECTION *a1@<esi>, int a2, _DWORD *a3);
-// signed int __userpurge EnterAndLeaveCritSection_3@<eax>(int a1@<ebx>, struct _RTL_CRITICAL_SECTION *a2@<esi>, _DWORD *a3);
-// int __userpurge EnterAndLeaveCritSection_2@<eax>(unsigned int a1@<eax>, int a2@<esi>, int a3, _DWORD *a4);
-// int __userpurge EnterAndLeaveCritSection@<eax>(struct _RTL_CRITICAL_SECTION *a1@<eax>, int *a2@<ebx>, int a3);
+// signed int __usercall EnterAndLeaveCritSection_4(int a1);
+// _DWORD *__userpurge GetHeapAndFreeIt(struct _RTL_CRITICAL_SECTION *a1, int a2, _DWORD *a3);
+// signed int __userpurge EnterAndLeaveCritSection_3(int a1, struct _RTL_CRITICAL_SECTION *a2, _DWORD *a3);
+// int __userpurge EnterAndLeaveCritSection_2(unsigned int a1, int a2, int a3, _DWORD *a4);
+// int __userpurge EnterAndLeaveCritSection(struct _RTL_CRITICAL_SECTION *a1, int *a2, int a3);
 int __stdcall EnumerateProcessHeap(LPCRITICAL_SECTION lpCriticalSection, void *Src, int); // idb
-																						  // signed int __userpurge CreateFileAndWrite@<eax>(const WCHAR *a1@<ebx>, LPCWSTR lpFileName, LPCVOID lpBuffer);
+																						  // signed int __userpurge CreateFileAndWrite(const WCHAR *a1, LPCWSTR lpFileName, LPCVOID lpBuffer);
 DWORD __stdcall StartAddress(LPVOID lpThreadParameter); // idb
-														// int __usercall Enum64BitProcessAndComPipes@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>);
+														// int __usercall Enum64BitProcessAndComPipes(__m64 a1@<mm0>, __m64 a2@<mm1>);
 int __stdcall EnumNetIPProtocols(int a1);
 int __stdcall EnumNetIpServices(int a1);
 LPCWSTR __stdcall EnumNetServers(int a1, DWORD servertype, LPCWSTR domain);
@@ -117,21 +117,21 @@ bool __stdcall CompareMemoryAllocs(const void *a1, const void *a2, unsigned int 
 void PerformPrivChecks();
 BOOL __stdcall DllEntryPoint(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved);
 DWORD __stdcall SetThreadParam(LPVOID lpThreadParameter); // idb
-														  // signed int __userpurge SelfLocalHostCheck@<eax>(__m64 mm0_0@<mm0>, __m64 a2@<mm1>, const unsigned __int16 *a1);
+														  // signed int __userpurge SelfLocalHostCheck(__m64 mm0_0@<mm0>, __m64 a2@<mm1>, const unsigned __int16 *a1);
 														  // void __usercall __noreturn perfc_1(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE hThread);
 int __stdcall CheckPrivsAdjustTokens(LPCWSTR lpName); // idb
 signed int FreeNetApiBuffer();
 unsigned int *__stdcall GetNetServerInfo(int *a1, unsigned int *a2, unsigned int *a3, int *a4);
 int __stdcall PathCombineWithCWindows(LPWSTR pszDest); // idb
 int SomeFileCheck();
-// BOOL __userpurge LaunchCMDProcess@<eax>(int a1@<eax>, int a2);
+// BOOL __userpurge LaunchCMDProcess(int a1, int a2);
 signed int GetversionInfo();
 int CreateScheduledTaskAsAdmin();
-// int __userpurge sub_73C285D0@<eax>(void **a1@<ebx>, __m64 mm0_0@<mm0>, __m64 a3@<mm1>, int a2, HRSRC hResInfo);
+// int __userpurge sub_73C285D0(void **a1, __m64 mm0_0@<mm0>, __m64 a3@<mm1>, int a2, HRSRC hResInfo);
 int EnumerateProcesses();
 unsigned int __stdcall EnumerateProcessesAndTokens(int a1);
-// signed int __userpurge CreateSomeFile_2@<eax>(DWORD a1@<ebx>, const WCHAR *lpFileName, LPCVOID lpBuffer, DWORD NumberOfBytesWritten);
-// signed int __userpurge GetDllHostData@<eax>(__m64 mm0_0@<mm0>, __m64 a2@<mm1>, int a1);
+// signed int __userpurge CreateSomeFile_2(DWORD a1, const WCHAR *lpFileName, LPCVOID lpBuffer, DWORD NumberOfBytesWritten);
+// signed int __userpurge GetDllHostData(__m64 mm0_0@<mm0>, __m64 a2@<mm1>, int a1);
 signed int CreateSomeFile();
 signed int __stdcall FindFileByName(int a1);
 signed int CheckSecurityAuthorityAndTokens();
@@ -141,24 +141,24 @@ DWORD __stdcall Unk_ConvertIPAddress(LPVOID lpThreadParameter); // idb
 DWORD __stdcall GetNetworkInterfaces(LPVOID lpThreadParameter); // idb
 int __stdcall EnumerateHostNameAndIP_2(int a1);
 signed int __thiscall sub_73C291FA(int a1, int a2);
-// int __userpurge CheckImageVProtect@<eax>(int a1@<esi>, LPVOID lpAddress);
+// int __userpurge CheckImageVProtect(int a1, LPVOID lpAddress);
 unsigned int __thiscall sub_73C29322(int a1, unsigned int a2);
 int LoadSomeLibraries();
-// int __userpurge CleanUp@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE hThread);
+// int __userpurge CleanUp(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE hThread);
 int __stdcall SetVirtualAttributes(int a1, int a2, int a3);
 int __stdcall EnumerateHostNameAndIP(char *name); // idb
-												  // int __userpurge SetWideAddress@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, LPCWSTR lpWideCharStr, int a4, int a5);
-												  // int __userpurge AcceptEulaAndLaunch@<eax>(WCHAR *a1@<ecx>, WCHAR *a2@<ebx>, int a3);
-												  // signed int __userpurge InitRemoteLaunch@<eax>(WCHAR *a1@<ecx>, WCHAR *a2@<esi>, int a3, int a4, int a5);
+												  // int __userpurge SetWideAddress(__m64 a1@<mm0>, __m64 a2@<mm1>, LPCWSTR lpWideCharStr, int a4, int a5);
+												  // int __userpurge AcceptEulaAndLaunch(WCHAR *a1@<ecx>, WCHAR *a2, int a3);
+												  // signed int __userpurge InitRemoteLaunch(WCHAR *a1@<ecx>, WCHAR *a2, int a3, int a4, int a5);
 int __stdcall CheckUACPathsAndLaunchProcess(int, LPCWSTR lpUserName, LPCWSTR lpPassword, int); // idb
-																							   // int __userpurge sub_73C29DC3@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, LPCWSTR lpWideCharStr);
-																							   // int __userpurge sub_73C29E05@<eax>(struct _RTL_CRITICAL_SECTION *eax0@<eax>, int a1);
+																							   // int __userpurge sub_73C29DC3(__m64 a1@<mm0>, __m64 a2@<mm1>, LPCWSTR lpWideCharStr);
+																							   // int __userpurge sub_73C29E05(struct _RTL_CRITICAL_SECTION *eax0, int a1);
 DWORD __stdcall LaunchChecksForAdminPaths(LPVOID lpThreadParameter); // idb
 int __stdcall CreateAndHandleThread(int a1, int a2);
 DWORD __stdcall sub_73C29F8E(LPVOID lpThreadParameter); // idb
 DWORD __stdcall sub_73C2A073(LPVOID lpThreadParameter); // idb
 DWORD __stdcall sub_73C2A0FE(LPVOID lpThreadParameter); // idb
-														// DWORD __userpurge SleepAndFreeHeap@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, LPVOID lpThreadParameter);
+														// DWORD __userpurge SleepAndFreeHeap(__m64 a1@<mm0>, __m64 a2@<mm1>, LPVOID lpThreadParameter);
 int __stdcall SockSendDataWithTimeOut(int, u_short hostshort); // idb
 signed int __stdcall CheckIfDataWasSent(int a1);
 // void *__cdecl memcpy(void *Dst, const void *Src, size_t Size);
@@ -166,10 +166,10 @@ signed int __stdcall CheckIfDataWasSent(int a1);
 // void *__cdecl malloc(size_t Size);
 // char *__cdecl itoa(int Val, char *DstBuf, int Radix);
 // void *__cdecl memset(void *Dst, int Val, size_t Size);
-// void *__usercall _alloca_probe@<eax>(unsigned int a1@<eax>, int a2@<ecx>);
-// signed int __userpurge SomeVersionCheck@<eax>(__m64 mm0_0@<mm0>, __m64 mm1_0@<mm1>, int a1, int *a2, int a3, int a4);
+// void *__usercall _alloca_probe(unsigned int a1, int a2@<ecx>);
+// signed int __userpurge SomeVersionCheck(__m64 mm0_0@<mm0>, __m64 mm1_0@<mm1>, int a1, int *a2, int a3, int a4);
 int __cdecl InsertCharsIntoBuffer(int a1);
-// signed int __userpurge SomeCompressionFunct@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, int a4);
+// signed int __userpurge SomeCompressionFunct(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, int a4);
 signed int __stdcall sub_73C2BA60(int a1);
 signed int __stdcall sub_73C2BAA4(int a1, signed int a2, _BYTE *a3, int a4);
 signed int __stdcall sub_73C2BB31(int a1, _BYTE *a2, int a3);
@@ -183,7 +183,7 @@ int __cdecl sub_73C2BF73(int a1, _BYTE *a2, unsigned int a3);
 void *__cdecl ReturnMultipliedMalloc(int Unused, int X, int Y); // idb
 void __cdecl FreeMemPtr(int unused, void *Memory); // idb
 signed int __cdecl sub_73C2C244(int a1, int a2, unsigned int a3, _DWORD **a4, unsigned int *a5, _WORD *a6);
-// int __usercall sub_73C2C6D0@<eax>(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, int a4);
+// int __usercall sub_73C2C6D0(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, int a4);
 // BOOL __stdcall CryptGenRandom(HCRYPTPROV hProv, DWORD dwLen, BYTE *pbBuffer);
 // BOOL __stdcall CryptAcquireContextA(HCRYPTPROV *phProv, LPCSTR szContainer, LPCSTR szProvider, DWORD dwProvType, DWORD dwFlags);
 // BOOL __stdcall CryptExportKey(HCRYPTKEY hKey, HCRYPTKEY hExpKey, DWORD dwBlobType, DWORD dwFlags, BYTE *pbData, DWORD *pdwDataLen);

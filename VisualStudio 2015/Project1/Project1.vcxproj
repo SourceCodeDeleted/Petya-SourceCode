@@ -113,6 +113,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arrays.h" />
     <ClInclude Include="defs.h" />
     <ClInclude Include="Header.h" />
   </ItemGroup>

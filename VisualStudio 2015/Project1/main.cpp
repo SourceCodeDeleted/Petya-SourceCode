@@ -1064,7 +1064,7 @@ int  SockCloseConnection(SOCKET *a1)
 }
 
 //----- (681F2088) --------------------------------------------------------
-BOOL __stdcall Dummy_StackSettup(__int64 a1)
+BOOL __stdcall Dummy_StackSettup(__int64 a1) // remove?
 {
 	return (a1 + 0xFFFFFFFFFFFi64) <= 0xFFEFFFFFFFEi64;
 }
@@ -1315,7 +1315,8 @@ int  SockreceivData(__int16 *a1, SOCKET s, char a3, char a4)
 	int v5; // [esp+4h] [ebp-4h]
 
 	v5 = 4096;
-	return -(SockGetData(&a4, a1, s, a3, &v5) != 0);
+	//return -(SockGetData(&a4, a1, s, a3, &v5) != 0); // origional
+	return -(SockGetData(a4, a1, s, a3, &v5) != 0);
 }
 
 //----- (681F2466) --------------------------------------------------------
@@ -4846,7 +4847,8 @@ int  SockGetData(char **a1, __int16 *a2, SOCKET s, char a4, int a5)
 	{
 		if (v5)
 		{
-			v6 = recv(s, *a1, *a5, 0);
+			v6 = recv(s, *a1, a5, 0);
+			//recv(socket_desc, server_reply , 6000 , 0) &lt; 0) // example from socket recv
 			*a2 = v6;
 			if (v6 > 0)
 			{

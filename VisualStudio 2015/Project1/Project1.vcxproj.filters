@@ -23,10 +23,16 @@
     <ClInclude Include="Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="defs.h">
+    <ClInclude Include="Arrays.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Arrays.h">
+    <ClInclude Include="structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Idadefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="defs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

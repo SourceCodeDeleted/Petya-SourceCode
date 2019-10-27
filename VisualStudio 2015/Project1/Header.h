@@ -94,7 +94,7 @@ int __stdcall CompareStringsW(int a1, int a2, int a3);
 // int __userpurge LaunchCrit3(int a1, struct _RTL_CRITICAL_SECTION *a2, __int16 *a3);
 _DWORD *__thiscall SomeHeapCleanupFunct(struct _RTL_CRITICAL_SECTION *a1, __int16 *a2);
 int __stdcall EnumProcessHeap(LPVOID lpMem); // idb
-int __thiscall CheckCritSection(void *a1, struct _RTL_CRITICAL_SECTION *a2, int *a3);
+int __thiscall CheckCritSection(void *this, struct _RTL_CRITICAL_SECTION *a2, int *a3);
 // int __userpurge sub_73C26FC7(char *a1, int a2, struct _RTL_CRITICAL_SECTION *lpCriticalSection);
 // void __usercall EnterAndLeaveCritSection_5(int a1);
 struct _RTL_CRITICAL_SECTION *__stdcall sub_73C27091(LONG a1, ULONG_PTR a2, _RTL_CRITICAL_SECTION_DEBUG *a3, LONG a4);
@@ -123,7 +123,7 @@ int __stdcall CheckPrivsAdjustTokens(LPCWSTR lpName); // idb
 signed int FreeNetApiBuffer();
 unsigned int *__stdcall GetNetServerInfo(int *a1, unsigned int *a2, unsigned int *a3, int *a4);
 int __stdcall PathCombineWithCWindows(LPWSTR pszDest); // idb
-int SomeFileCheck();
+HANDLE SomeFileCheck();
 // BOOL __userpurge LaunchCMDProcess(int a1, int a2);
 signed int GetversionInfo();
 int CreateScheduledTaskAsAdmin();

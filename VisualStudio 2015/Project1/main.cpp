@@ -6,6 +6,7 @@ Detected compiler: Visual C++
 
 #include <windows.h>
 #include <iostream>
+
 #include <wincrypt.h>
 #include <stdio.h>
 #include <tlhelp32.h>
@@ -4859,7 +4860,7 @@ int  SockGetData(char **a1, __int16 *a2, SOCKET s, char a4, int a5)
 					return 0;
 				while (1)
 				{
-					v11 = recv(s, &(*a1)[v8], *a5 - v8, 0);
+					v11 = recv(s, &(*a1)[v8], a5 - v8, 0);
 					if (v11 <= 0)
 						break;
 					*a2 += v11;
@@ -5046,14 +5047,14 @@ int __stdcall CheckCmdLineArgs(LPCWSTR lpCmdLine)
 // 6820F760: using guessed type int dword_6820F760;
 
 //----- (681F6AF0) --------------------------------------------------------
-int GeneratePath()
+int GeneratePath() 
 {
 	int v0; // edi
 	_DWORD *v1; // ebx
 	unsigned int v2; // kr00_4
 	HANDLE v3; // eax
 	int result; // eax
-	WCHAR v5; // [esp+Ch] [ebp-804h]
+	LPWSTR  v5; // [esp+Ch] [ebp-804h]
 	__int16 v6; // [esp+Eh] [ebp-802h]
 	_DWORD **v7; // [esp+80Ch] [ebp-4h]
 
@@ -5065,14 +5066,15 @@ int GeneratePath()
 	{
 		do
 		{
-			wsprintfW(&v5, L" \"%ws:%ws\"", **v7, (*v7)[1]);
-			v2 = wcslen(&v5);
+			wsprintfW(v5, L" \"%ws:%ws\"", **v7, (*v7)[1]);
+			v2 = wcslen(v5);
 			if (v2 + v0 >= 0x1FF5)
 				break;
-			StrCatW(&v6, word_6820B110, &v5);
+			//StrCatW(&v6, word_6820B110, &v5); // orig // strcat cannot have 3 params... Why IDA?
+			StrCatW(word_6820B110, v5); // might be incorrect. It doesn't like Wchar stuff.
 			v7 = 0;
 			v0 += v2;
-		} while (EnterAndLeaveCritSection_3(v1, lpCriticalSection, &v7));
+		} while (EnterAndLeaveCritSection_3(*v1, lpCriticalSection, *v7)); // Probably wrong in the pointers.
 		v3 = GetProcessHeap();
 		HeapFree(v3, 0, v1);
 	}
@@ -5087,7 +5089,7 @@ int GeneratePath()
 // 6820F0F8: using guessed type __int16 word_6820F0F8;
 
 //----- (681F6BB0) --------------------------------------------------------
-int __stdcall sub_681F6BB0(_WORD *a1)
+int __stdcall sub_681F6BB0(PWSTR a1)
 {
 	DWORD v1; // eax
 	unsigned int v2; // kr00_4
@@ -5113,8 +5115,12 @@ int __stdcall sub_681F6BB0(_WORD *a1)
 	else
 	{
 		*a1 = 0;
-		StrCatW(&v7, a1, &v7);
-		StrCatW(v5, a1, word_6820B110);
+		/*
+		StrCatW(&v7, a1, &v7); // Origional
+		StrCatW(v5, a1, word_6820B110); 
+		*/
+		StrCatW(a1, &v7);
+		StrCatW(a1, word_6820B110);
 		v3 = v4 + v2;
 	}
 	LeaveCriticalSection(&CriticalSection);
@@ -5125,12 +5131,12 @@ int __stdcall sub_681F6BB0(_WORD *a1)
 // 6820B110: using guessed type __int16 word_6820B110[8180];
 
 //----- (681F6C74) --------------------------------------------------------
-signed int __stdcall CompareStringsW_2(int a1, int a2, int a3)
+signed int __stdcall CompareStringsW_2(PCWSTR a1, PCWSTR a2, int a3)
 {
 	signed int v3; // ebx
 
 	v3 = 0;
-	if (!StrCmpIW(*a1, *a2) && !StrCmpW(*(a1 + 4), *(a2 + 4)))
+	if (!StrCmpIW(a1, a2) && !StrCmpW((a1 + 4), (a2 + 4)))
 		v3 = 1;
 	return v3;
 }
@@ -5490,7 +5496,7 @@ _DWORD * GetHeapAndFreeIt(struct _RTL_CRITICAL_SECTION *a1, int a2, _DWORD *a3)
 }
 
 //----- (681F7167) --------------------------------------------------------
-signed int  EnterAndLeaveCritSection_3(int a1, struct _RTL_CRITICAL_SECTION *a2, _DWORD *a3) // remove?
+signed int  EnterAndLeaveCritSection_3(_DWORD a1, struct _RTL_CRITICAL_SECTION *a2, _DWORD *a3) // remove?
 {
 	signed int result; // eax
 	signed int v4; // edi

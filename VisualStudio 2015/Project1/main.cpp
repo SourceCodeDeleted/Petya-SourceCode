@@ -4936,7 +4936,7 @@ DWORD ReturnTimeIfTimePassed()
 // 6820F760: using guessed type int dword_6820F760;
 
 //----- (681F69A2) --------------------------------------------------------
-signed int  CheckUsrArgs(int a1)
+signed int  CheckUsrArgs(LPWSTR a1)
 {
 	const WCHAR *v1; // eax
 	int v2; // edi
@@ -4994,7 +4994,7 @@ int __stdcall CheckCmdLineArgs(LPCWSTR lpCmdLine)
 	int v3; // eax
 	signed int v4; // ebx
 	LPWSTR v5; // edi
-	_WORD *v6; // eax
+	LPWSTR v6; // eax
 	int pNumArgs; // [esp+4h] [ebp-4h]
 
 	if (lpCmdLine)
@@ -5144,7 +5144,7 @@ signed int __stdcall CompareStringsW_2(PCWSTR a1, PCWSTR a2, int a3)
 // 681FD230: using guessed type int __stdcall StrCmpIW(_DWORD, _DWORD);
 
 //----- (681F6CAA) --------------------------------------------------------
-void __stdcall CleanUpHeaps_3(int a1)
+void __stdcall CleanUpHeaps_3(LPVOID a1)//remove?
 {
 	void *v1; // ST08_4
 	HANDLE v2; // eax

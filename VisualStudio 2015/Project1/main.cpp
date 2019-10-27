@@ -5047,7 +5047,7 @@ int __stdcall CheckCmdLineArgs(LPCWSTR lpCmdLine)
 // 6820F760: using guessed type int dword_6820F760;
 
 //----- (681F6AF0) --------------------------------------------------------
-int GeneratePath() 
+int GeneratePath() // It wouldn't suprise me if this function is loaded with crashes.
 {
 	int v0; // edi
 	_DWORD *v1; // ebx
@@ -5061,7 +5061,7 @@ int GeneratePath()
 	word_6820B110[0] = 0;
 	v0 = 0;
 	v7 = 0;
-	v1 = GetHeapAndFreeIt(lpCriticalSection, 1, &v7);
+	v1 = GetHeapAndFreeIt(lpCriticalSection, 1, *v7);
 	if (v1)
 	{
 		do
@@ -8539,18 +8539,18 @@ signed int  SomeVersionCheck(__m64 mm0_0, __m64 mm1_0, int a1, int *a2, int a3, 
 	v9 = a4;
 	v10 = a1;
 	v11 = *a2;
-	result = sub_681FBB31(&v8, "1.2.8", 56);
+	result = sub_681FBB31(v8, L"1.2.8", 56);
 	if (!result)
 	{
-		v7 = SomeCompressionFunct(mm0_0, mm1_0, &v8, 4);
+		v7 = SomeCompressionFunct(mm0_0, mm1_0, v8, 4);
 		if (v7 == 1)
 		{
 			*a2 = v12;
-			result = sub_681FBA60(&v8);
+			result = sub_681FBA60(v8);
 		}
 		else
 		{
-			sub_681FBA60(&v8);
+			sub_681FBA60(v8);
 			if (v7 != 2 && (v7 != -5 || v9))
 				result = v7;
 			else
@@ -8575,7 +8575,7 @@ int __cdecl InsertCharsIntoBuffer(int a1)
 // 681FD2D0: using guessed type int WhatIsThis_dword_681FD2D0[512];
 
 //----- (681FA5CC) --------------------------------------------------------
-signed int  SomeCompressionFunct(__m64 a1, __m64 a2, int a3, int a4)
+signed int  SomeCompressionFunct(__m64 a1, __m64 a2, int a3, int a4) // This I think is from somewhere else.
 {
 	int v4; // ebx
 	unsigned int v5; // edx
@@ -10167,7 +10167,7 @@ signed int __stdcall sub_681FBA60(int a1)
 }
 
 //----- (681FBAA4) --------------------------------------------------------
-signed int __stdcall sub_681FBAA4(int a1, signed int a2, _BYTE *a3, int a4)
+signed int __stdcall sub_681FBAA4(int a1, signed int a2, PCWSTR a3, int a4) //remove? // Is this modifying parts of struct or checking Wchar array?
 {
 	int v4; // eax
 	int v5; // edi
@@ -10178,7 +10178,7 @@ signed int __stdcall sub_681FBAA4(int a1, signed int a2, _BYTE *a3, int a4)
 	if (!a1)
 		return -2;
 	*(a1 + 24) = 0;
-	if (!*(a1 + 32))
+	if (!(a1 + 32))
 	{
 		*(a1 + 32) = ReturnMultipliedMalloc;
 		*(a1 + 40) = 0;
@@ -10201,13 +10201,13 @@ signed int __stdcall sub_681FBAA4(int a1, signed int a2, _BYTE *a3, int a4)
 }
 
 //----- (681FBB31) --------------------------------------------------------
-signed int __stdcall sub_681FBB31(int a1, _BYTE *a2, int a3)
+signed int __stdcall sub_681FBB31(int a1, PCWSTR a2, int a3)
 {
 	return sub_681FBAA4(a1, 15, a2, a3);
 }
 
 //----- (681FBB48) --------------------------------------------------------
-signed int __stdcall sub_681FBB48(int a1, signed int a2)
+signed int __stdcall sub_681FBB48(int a1, signed int a2) // remove?
 {
 	int v2; // edi
 	_DWORD *v3; // ebx
@@ -10264,7 +10264,7 @@ signed int __stdcall sub_681FBBBF(int a1)
 }
 
 //----- (681FBBEA) --------------------------------------------------------
-signed int __stdcall sub_681FBBEA(int a1)
+signed int __stdcall sub_681FBBEA(int a1) // Remove?  I should debug these and see what happens here.
 {
 	_DWORD *v1; // ecx
 	int v2; // edx

@@ -5828,7 +5828,7 @@ int  Enum64BitProcessAndComPipes(__m64 a1, __m64 a2)
 	//v5 = FindResourceW(Src, ((v22 != 0) + 1), 0xA); //orig
 	v5 = FindResourceW(Src, MAKEINTRESOURCE(1), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)); // not sure if this is correct.
 	if (v5)
-		result = LoadAndLock(&lpMem, a1, a2, &v25, v5);
+		result = LoadAndLock(&lpMem, a1, a2, v25, v5);
 	else
 		result = 0;
 	if (result)

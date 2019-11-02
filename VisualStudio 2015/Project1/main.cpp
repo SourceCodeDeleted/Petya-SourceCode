@@ -5682,7 +5682,7 @@ int __stdcall EnumerateProcessHeap(LPCRITICAL_SECTION lpCriticalSection, void *S
 }
 
 //----- (681F73AE) --------------------------------------------------------
-signed int  CreateFileAndWrite(const WCHAR *a1, LPCWSTR lpFileName, LPCVOID lpBuffer)
+signed int  CreateFileAndWrite(int a1, LPCWSTR lpFileName, LPCVOID lpBuffer)
 {
 	signed int v3; // esi
 	HANDLE v4; // edi
@@ -5692,9 +5692,13 @@ signed int  CreateFileAndWrite(const WCHAR *a1, LPCWSTR lpFileName, LPCVOID lpBu
 	if (v4 != INVALID_HANDLE_VALUE)
 	{
 		lpFileName = 0;
-		if (WriteFile(v4, lpBuffer, a1, &lpFileName, 0) && a1 == lpFileName)
+		//if (WriteFile(v4, lpBuffer, a1, &lpFileName, 0) && a1 == lpFileName) v3 = 1;  //orig // Writes a file and checks if it was written . if written retn true
+		if (WriteFile(v4, lpBuffer, (DWORD)a1, (LPDWORD)lpFileName, 0)); // I guess since the 3rd param is bytes written not used It doesn't 
+		if (lpFileName) {
 			v3 = 1;
-		CloseHandle(v4);
+		}
+		CloseHandle(v4);										 //care where saved and overwrites the filename space.
+		
 	}
 	return v3;
 }
@@ -5812,10 +5816,12 @@ int  Enum64BitProcessAndComPipes(__m64 a1, __m64 a2)
 	v2 = GetCurrentProcess();
 	v22 = 0;
 	v3 = GetModuleHandleW(L"kernel32.dll");
-	v4 = GetProcAddress(v3, "IsWow64Process");
+	v4 = GetProcAddress(v3, "IsWow64Process");//Why not Wide CHAR? // Should RETN HANDLE
 	if (v4)
-		(v4)(v2, &v22);
-	v5 = FindResourceW(Src, ((v22 != 0) + 1), 0xA);
+		//(v4)(&v22); // I think this is IsWow64Process(v2, v22); //orig
+		IsWow64Process(v2, &v22);
+	//v5 = FindResourceW(Src, ((v22 != 0) + 1), 0xA); //orig
+	v5 = FindResourceW(Src, ((v22 != 0) + 1), MAKEINTRESOURCE(10));
 	if (v5)
 		result = LoadAndLock(&lpMem, a1, a2, &v25, v5);
 	else

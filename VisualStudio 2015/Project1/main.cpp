@@ -672,11 +672,12 @@ void __stdcall EnumerateFiles(LPCWSTR pszDir, int a2, int a3)
 		if (PathCombineW(&pszDest, pszDir, L"*"))
 		{
 			hFindFile = FindFirstFileW(&pszDest, &FindFileData);
-			if (hFindFile != -1)
+			if (hFindFile != INVALID_HANDLE_VALUE)
 			{
 				do
 				{
-					v3 = *(a3 + 28);
+					//v3 = *(a3 + 28); // origional -- probably structpointer + 7 variables.
+
 					if (v3)
 					{
 						v4 = WaitForSingleObject(v3, 0);

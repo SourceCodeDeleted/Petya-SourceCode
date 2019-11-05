@@ -160,7 +160,7 @@ int __stdcall GetSystemVolumes(char *a1)
 	if (GetSystemDirectoryA(&Buffer, 0x104u)
 		&& (LOBYTE(v25) = Buffer) && (file_h != INVALID_HANDLE_VALUE))
 	{
-		if (DeviceIoControl(file_h, 0x560000u, 0, 0, &OutBuffer, 0x20u, &BytesReturned, 0))
+		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &OutBuffer, 0x20u, &BytesReturned, NULL)) // VOLUME_DISK_EXTENTS volumeDiskExtents; - sizeof(volumeDiskExtents);
 		{
 			itoa(Val, &DstBuf, 10);
 			v4 = strlen(&Src);

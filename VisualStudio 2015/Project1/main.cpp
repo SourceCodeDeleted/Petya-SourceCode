@@ -187,7 +187,7 @@ int __stdcall GetSystemVolumes(void *a1) // char*
 					v9 = v6 + v8;
 					if (v6 + v8 < 0x104)
 					{
-						memcpy(&v7[v8], DstBuf, Size);
+						memcpy(&v7[v8], &DstBuf, Size);
 						v7[v9] = 0;
 					}
 				}

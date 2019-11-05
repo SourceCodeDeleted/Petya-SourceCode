@@ -114,18 +114,18 @@ int __stdcall GetSystemVolumes(char *a1)
 {
 	int result; // eax
 	HANDLE file_h; // eax
-	DWORD  error; // eax
+	signed __int32  error; // eax DWORD
 	unsigned int v4; // kr00_4
 	size_t v5; // edi
 	unsigned int v6; // ecx
-	char *v7; // esi
+	char *v7; // esi marked as const but couldn't run
 	unsigned int v8; // eax
 	int v9; // edi
-	CHAR Buffer[MAX_PATH]; // [esp+10h] [ebp-26Ch]
+	CHAR Buffer; // [esp+10h] [ebp-26Ch]
 	char Dst; // [esp+11h] [ebp-26Bh]
 	char Src; // [esp+118h] [ebp-164h]
 	char v13; // [esp+119h] [ebp-163h]
-	VOLUME_DISK_EXTENTS  volumeDiskExtents; // [esp+220h] [ebp-5Ch]
+	int  volumeDiskExtents; // [esp+220h] [ebp-5Ch] VOLUME_DISK_EXTENTS  
 	int Val; // [esp+228h] [ebp-54h]
 	char DstBuf[(sizeof(int) * 8 + 1)]; // [esp+240h] [ebp-3Ch] str should be an array long enough to contain any possible value: (sizeof(int)*8+1) for radix=2, i.e. 17 bytes in 16-bits platforms and 33 in 32-bits platforms
 	char v17; // [esp+241h] [ebp-3Bh]
@@ -136,14 +136,14 @@ int __stdcall GetSystemVolumes(char *a1)
 	size_t Size; // [esp+268h] [ebp-14h]
 	int v23; // [esp+26Ch] [ebp-10h]
 	CHAR FileName[4]; // [esp+270h] [ebp-Ch]
-	char v25; // [esp+274h] [ebp-8h]
+	__int16 v25; // [esp+274h] [ebp-8h]
 
 	v23 = 0;
-	Buffer[0] = 0;
+	Buffer = 0;
 	memset(&Dst, 0, 0x103u);
 	Src = 0;
 	memset(&v13, 0, 0x103u);
-	volumeDiskExtents.NumberOfDiskExtents = 0;
+	volumeDiskExtents = 0;
 	memset(&Val, 0, 0x18u);
 	DstBuf[0] = 0;
 	memset(&v17, 0, 0x1Cu);
@@ -155,12 +155,11 @@ int __stdcall GetSystemVolumes(char *a1)
 		return 160;
 	memset(a1, 0, 0x104u);
 	strcpy(&Src, "\\\\.\\PhysicalDrive");
-	file_h = CreateFileA(FileName, 0, 3u, 0, 3u, 0, 0);
-	// hObject = file_h;
-	if (GetSystemDirectoryA(Buffer, sizeof(Buffer))
-		&& (LOBYTE(v25) = Buffer[0]) && (file_h != INVALID_HANDLE_VALUE))
+	if (GetSystemDirectoryA(&Buffer, 0x104u) // MAX_PATH
+		&& (LOBYTE(v25) = Buffer, file_h = CreateFileA(FileName, 0, 3u, 0, 3u, 0, 0), hObject = file_h, file_h != INVALID_HANDLE_VALUE))
+
 	{
-		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &volumeDiskExtents, sizeof(volumeDiskExtents), &BytesReturned, NULL))
+		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &volumeDiskExtents, 0x20u, &BytesReturned, NULL))
 		{
 			itoa(Val, DstBuf, 10);
 			v4 = strlen(&Src);
@@ -205,7 +204,7 @@ int __stdcall GetSystemVolumes(char *a1)
 				error = error | 0x80070000;
 			v23 = error;
 		}
-		CloseHandle(file_h);
+		CloseHandle(hObject);
 		result = v23;
 	}
 	else

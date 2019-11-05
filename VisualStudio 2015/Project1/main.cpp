@@ -114,7 +114,7 @@ int __stdcall GetSystemVolumes(char *a1)
 {
 	int result; // eax
 	HANDLE file_h; // eax
-	signed __int32 v3; // eax
+	DWORD  error; // eax
 	unsigned int v4; // kr00_4
 	size_t v5; // edi
 	unsigned int v6; // ecx
@@ -125,7 +125,7 @@ int __stdcall GetSystemVolumes(char *a1)
 	char Dst; // [esp+11h] [ebp-26Bh]
 	char Src; // [esp+118h] [ebp-164h]
 	char v13; // [esp+119h] [ebp-163h]
-	int OutBuffer; // [esp+220h] [ebp-5Ch]
+	VOLUME_DISK_EXTENTS  volumeDiskExtents; // [esp+220h] [ebp-5Ch]
 	int Val; // [esp+228h] [ebp-54h]
 	char DstBuf; // [esp+240h] [ebp-3Ch]
 	char v17; // [esp+241h] [ebp-3Bh]
@@ -143,7 +143,7 @@ int __stdcall GetSystemVolumes(char *a1)
 	memset(&Dst, 0, 0x103u);
 	Src = 0;
 	memset(&v13, 0, 0x103u);
-	OutBuffer = 0;
+	volumeDiskExtents.NumberOfDiskExtents = 0;
 	memset(&Val, 0, 0x18u);
 	DstBuf = 0;
 	memset(&v17, 0, 0x1Cu);
@@ -160,7 +160,7 @@ int __stdcall GetSystemVolumes(char *a1)
 	if (GetSystemDirectoryA(&Buffer, 0x104u)
 		&& (LOBYTE(v25) = Buffer) && (file_h != INVALID_HANDLE_VALUE))
 	{
-		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &OutBuffer, 0x20u, &BytesReturned, NULL)) // VOLUME_DISK_EXTENTS volumeDiskExtents; - sizeof(volumeDiskExtents);
+		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &volumeDiskExtents, sizeof(volumeDiskExtents), &BytesReturned, NULL)) // VOLUME_DISK_EXTENTS volumeDiskExtents; - sizeof(volumeDiskExtents);
 		{
 			itoa(Val, &DstBuf, 10);
 			v4 = strlen(&Src);
@@ -195,15 +195,15 @@ int __stdcall GetSystemVolumes(char *a1)
 			}
 			else
 			{
-				v23 = -2147024774;
+				v23 = E_FAIL; // 0x80004005
 			}
 		}
 		else
 		{
-			v3 = GetLastError();
-			if (v3 > 0)
-				v3 = v3 | 0x80070000;
-			v23 = v3;
+			error = GetLastError();
+			if (error > 0)
+				error = error | 0x80070000;
+			v23 = error;
 		}
 		CloseHandle(file_h);
 		result = v23;

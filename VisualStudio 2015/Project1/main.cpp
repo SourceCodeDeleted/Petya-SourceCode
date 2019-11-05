@@ -619,38 +619,43 @@ HANDLE __stdcall WriteFileMapping(LPCWSTR lpFileName, int a2)
 	HANDLE hObject; // [esp+20h] [ebp-8h]
 	BOOL Final; // [esp+24h] [ebp-4h]
 
-	result = CreateFileW(lpFileName, 0xC0000000, 0, 0, 3u, 0, 0);
+	result = CreateFileW(lpFileName, TAPE_DRIVE_FORMAT_IMMEDIATE, 0, 0, 3u, 0, 0);
 	v3 = result;
 	v8 = result;
-	if (result != -1)
+	if (result != INVALID_HANDLE_VALUE)
 	{
 		GetFileSizeEx(result, &FileSize);
 		Final = 0;
-		if (FileSize.QuadPart <= 0x100000)
+		if (FileSize.QuadPart <= MEM_TOP_DOWN) //orig  // 0x100000
 		{
-			lpFileName = FileSize.s.LowPart;
+			//orig//lpFileName = FileSize.s.LowPart;
+			lpFileName = (LPCWSTR)FileSize.LowPart; // This looks like it is getting the next dword in the structure 
 			Final = 1;
-			v4 = 16 * ((FileSize.s.LowPart >> 4) + 1);
+			//orig//v4 = 16 * ((FileSize.s.LowPart >> 4) + 1);
+			v4 = 16 * ((FileSize.LowPart >> 4) + 1); // this is going to require structure repair... (((
 		}
 		else
 		{
-			lpFileName = 0x100000;
-			v4 = 0x100000;
+			lpFileName = (LPCWSTR)MEM_TOP_DOWN; //orig  // 0x100000 // probably will need to fix this. 
+			v4 = MEM_TOP_DOWN;   //orig  // 0x100000
 		}
 		v5 = CreateFileMappingW(v3, 0, 4u, 0, v4, 0);
 		hObject = v5;
 		if (v5)
 		{
-			v6 = MapViewOfFile(v5, 6u, 0, 0, lpFileName);
+			v6 = MapViewOfFile(v5, 6u, 0, 0, (SIZE_T)lpFileName);
 			if (v6)
 			{
-				if (CryptEncrypt(*(a2 + 20), 0, Final, 0, v6, &lpFileName, v4))
-					FlushViewOfFile(v6, lpFileName);
+				//if (CryptEncrypt(*(a2 + 20), 0, Final, 0, v6, &lpFileName, v4)) // orig
+				if (CryptEncrypt(a2 + 20, 0, Final, 0, (BYTE *)v6, (DWORD *)&lpFileName, v4)) { // I think what happens is that when the file is created , 
+					FlushViewOfFile(v6, (SIZE_T)lpFileName);									//a retn of the bytes written is completed. That retn is used for the size of the encrypt function.
+				}
+					
 				UnmapViewOfFile(v6);
 			}
 			CloseHandle(hObject);
 		}
-		result = CloseHandle(v8);
+		result = (HANDLE)CloseHandle(v8); // not correct to make handle. This function probably is a BOOL We should clean this up when we are at code cleaning 
 	}
 	return result;
 }

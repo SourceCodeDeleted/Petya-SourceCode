@@ -157,7 +157,6 @@ int __stdcall GetSystemVolumes(void *a1) // char*
 	strcpy(&Src, "\\\\.\\PhysicalDrive");
 	if (GetSystemDirectoryA(&Buffer, 0x104u) // MAX_PATH
 		&& (LOBYTE(v25) = Buffer, file_h = CreateFileA(FileName, 0, 3u, 0, 3u, 0, 0), hObject = file_h, file_h != INVALID_HANDLE_VALUE))
-
 	{
 		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &OutBuffer, 0x20u, &BytesReturned, NULL))
 		{

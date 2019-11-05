@@ -110,15 +110,15 @@ void __stdcall FreeHeap(LPVOID lpMem)
 }
 
 //----- (681F1038) --------------------------------------------------------
-int __stdcall GetSystemVolumes(void *a1)
+int __stdcall GetSystemVolumes(char *a1)
 {
 	int result; // eax
-	HANDLE v2; // eax
+	HANDLE file_h; // eax
 	signed __int32 v3; // eax
 	unsigned int v4; // kr00_4
 	size_t v5; // edi
 	unsigned int v6; // ecx
-	const char *v7; // esi
+	char *v7; // esi
 	unsigned int v8; // eax
 	int v9; // edi
 	CHAR Buffer; // [esp+10h] [ebp-26Ch]
@@ -155,10 +155,12 @@ int __stdcall GetSystemVolumes(void *a1)
 		return 160;
 	memset(a1, 0, 0x104u);
 	strcpy(&Src, "\\\\.\\PhysicalDrive");
+	file_h = CreateFileA(FileName, 0, 3u, 0, 3u, 0, 0);
+	// hObject = file_h;
 	if (GetSystemDirectoryA(&Buffer, 0x104u)
-		&& (LOBYTE(v25) = Buffer, v2 = CreateFileA(FileName, 0, 3u, 0, 3u, 0, 0), hObject = v2, v2 != -1))
+		&& (LOBYTE(v25) = Buffer) && (file_h != INVALID_HANDLE_VALUE))
 	{
-		if (DeviceIoControl(v2, 0x560000u, 0, 0, &OutBuffer, 0x20u, &BytesReturned, 0))
+		if (DeviceIoControl(file_h, 0x560000u, 0, 0, &OutBuffer, 0x20u, &BytesReturned, 0))
 		{
 			itoa(Val, &DstBuf, 10);
 			v4 = strlen(&Src);
@@ -203,7 +205,7 @@ int __stdcall GetSystemVolumes(void *a1)
 				v3 = v3 | 0x80070000;
 			v23 = v3;
 		}
-		CloseHandle(hObject);
+		CloseHandle(file_h);
 		result = v23;
 	}
 	else

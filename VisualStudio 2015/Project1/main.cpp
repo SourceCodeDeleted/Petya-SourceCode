@@ -121,13 +121,13 @@ int __stdcall GetSystemVolumes(char *a1)
 	char *v7; // esi
 	unsigned int v8; // eax
 	int v9; // edi
-	CHAR Buffer; // [esp+10h] [ebp-26Ch]
+	CHAR Buffer[MAX_PATH]; // [esp+10h] [ebp-26Ch]
 	char Dst; // [esp+11h] [ebp-26Bh]
 	char Src; // [esp+118h] [ebp-164h]
 	char v13; // [esp+119h] [ebp-163h]
 	VOLUME_DISK_EXTENTS  volumeDiskExtents; // [esp+220h] [ebp-5Ch]
 	int Val; // [esp+228h] [ebp-54h]
-	char DstBuf; // [esp+240h] [ebp-3Ch]
+	char DstBuf[(sizeof(int) * 8 + 1)]; // [esp+240h] [ebp-3Ch] str should be an array long enough to contain any possible value: (sizeof(int)*8+1) for radix=2, i.e. 17 bytes in 16-bits platforms and 33 in 32-bits platforms
 	char v17; // [esp+241h] [ebp-3Bh]
 	__int16 v18; // [esp+25Dh] [ebp-1Fh]
 	char v19; // [esp+25Fh] [ebp-1Dh]
@@ -136,16 +136,16 @@ int __stdcall GetSystemVolumes(char *a1)
 	size_t Size; // [esp+268h] [ebp-14h]
 	int v23; // [esp+26Ch] [ebp-10h]
 	CHAR FileName[4]; // [esp+270h] [ebp-Ch]
-	__int16 v25; // [esp+274h] [ebp-8h]
+	char v25; // [esp+274h] [ebp-8h]
 
 	v23 = 0;
-	Buffer = 0;
+	Buffer[0] = 0;
 	memset(&Dst, 0, 0x103u);
 	Src = 0;
 	memset(&v13, 0, 0x103u);
 	volumeDiskExtents.NumberOfDiskExtents = 0;
 	memset(&Val, 0, 0x18u);
-	DstBuf = 0;
+	DstBuf[0] = 0;
 	memset(&v17, 0, 0x1Cu);
 	v18 = 0;
 	strcpy(FileName, "\\\\.\\0:");
@@ -157,15 +157,15 @@ int __stdcall GetSystemVolumes(char *a1)
 	strcpy(&Src, "\\\\.\\PhysicalDrive");
 	file_h = CreateFileA(FileName, 0, 3u, 0, 3u, 0, 0);
 	// hObject = file_h;
-	if (GetSystemDirectoryA(&Buffer, 0x104u)
-		&& (LOBYTE(v25) = Buffer) && (file_h != INVALID_HANDLE_VALUE))
+	if (GetSystemDirectoryA(Buffer, sizeof(Buffer))
+		&& (LOBYTE(v25) = Buffer[0]) && (file_h != INVALID_HANDLE_VALUE))
 	{
-		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &volumeDiskExtents, sizeof(volumeDiskExtents), &BytesReturned, NULL)) // VOLUME_DISK_EXTENTS volumeDiskExtents; - sizeof(volumeDiskExtents);
+		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &volumeDiskExtents, sizeof(volumeDiskExtents), &BytesReturned, NULL))
 		{
-			itoa(Val, &DstBuf, 10);
+			itoa(Val, DstBuf, 10);
 			v4 = strlen(&Src);
 			v5 = v4;
-			v6 = strlen(&DstBuf);
+			v6 = strlen(DstBuf);
 			Size = v6;
 			if (v6 + v4 + 1 <= 0x104)
 			{
@@ -188,7 +188,7 @@ int __stdcall GetSystemVolumes(char *a1)
 					v9 = v6 + v8;
 					if (v6 + v8 < 0x104)
 					{
-						memcpy(&v7[v8], &DstBuf, Size);
+						memcpy(&v7[v8], DstBuf, Size);
 						v7[v9] = 0;
 					}
 				}

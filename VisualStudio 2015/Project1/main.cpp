@@ -127,7 +127,7 @@ int __stdcall GetSystemVolumes(void *a1) // char*
 	char v13; // [esp+119h] [ebp-163h]
 	int  OutBuffer; // [esp+220h] [ebp-5Ch] VOLUME_DISK_EXTENTS  
 	int Val; // [esp+228h] [ebp-54h]
-	char DstBuf[(sizeof(int) * 8 + 1)]; // [esp+240h] [ebp-3Ch] str should be an array long enough to contain any possible value: (sizeof(int)*8+1) for radix=2, i.e. 17 bytes in 16-bits platforms and 33 in 32-bits platforms
+	char DstBuf; // [esp+240h] [ebp-3Ch] char DstBuf[(sizeof(int) * 8 + 1)] str should be an array long enough to contain any possible value: (sizeof(int)*8+1) for radix=2, i.e. 17 bytes in 16-bits platforms and 33 in 32-bits platforms
 	char v17; // [esp+241h] [ebp-3Bh]
 	__int16 v18; // [esp+25Dh] [ebp-1Fh]
 	char v19; // [esp+25Fh] [ebp-1Dh]
@@ -145,7 +145,7 @@ int __stdcall GetSystemVolumes(void *a1) // char*
 	memset(&v13, 0, 0x103u);
 	OutBuffer = 0;
 	memset(&Val, 0, 0x18u);
-	DstBuf[0] = 0;
+	DstBuf = 0;
 	memset(&v17, 0, 0x1Cu);
 	v18 = 0;
 	strcpy(FileName, "\\\\.\\0:");
@@ -161,10 +161,10 @@ int __stdcall GetSystemVolumes(void *a1) // char*
 	{
 		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &OutBuffer, 0x20u, &BytesReturned, NULL))
 		{
-			itoa(Val, DstBuf, 10);
+			itoa(Val, &DstBuf, 10);
 			v4 = strlen(&Src);
 			v5 = v4;
-			v6 = strlen(DstBuf);
+			v6 = strlen(&DstBuf);
 			Size = v6;
 			if (v6 + v4 + 1 <= 0x104)
 			{

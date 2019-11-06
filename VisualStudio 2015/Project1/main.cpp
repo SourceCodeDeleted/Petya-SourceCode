@@ -216,21 +216,21 @@ int __stdcall GetSystemVolumes(char *a1) // char*
 }
 
 //----- (681F122D) --------------------------------------------------------
-int __stdcall CreateSomeFiles(LPCSTR lpFileName, int a2)
+int __stdcall CreateSomeFiles(LPCSTR lpFileName, void * a2)
 {
 	signed __int32 v2; // esi
 	HANDLE v4; // edi
 	signed __int32 v5; // eax
 	signed __int32 v6; // eax
-	int OutBuffer; // [esp+8h] [ebp-98h]
+	void * OutBuffer; // [esp+8h] [ebp-98h]
 	DWORD BytesReturned; // [esp+9Ch] [ebp-4h]
 
 	v2 = 0;
 	BytesReturned = 0;
 	if (!lpFileName)
-		return -2147024809;
+		return 0x80070057;
 	v4 = CreateFileA(lpFileName, 0x80100000, 3u, 0, 3u, 0, 0);
-	if (v4 == -1)
+	if (v4 == INVALID_HANDLE_VALUE)
 	{
 		v5 = GetLastError();
 		if (v5 > 0)
@@ -241,7 +241,7 @@ int __stdcall CreateSomeFiles(LPCSTR lpFileName, int a2)
 	{
 		if (DeviceIoControl(v4, 0x70048u, 0, 0, &OutBuffer, 0x90u, &BytesReturned, 0))
 		{
-			*a2 = OutBuffer;
+			a2 = OutBuffer;
 		}
 		else
 		{

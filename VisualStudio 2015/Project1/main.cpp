@@ -305,9 +305,9 @@ int  CheckIfFileExists(int a1, LPCSTR lpFileName, LPCVOID lpBuffer)
 	v4 = a1;
 	NumberOfBytesWritten = 0;
 	if (!lpFileName)
-		return -2147024809;
-	v6 = CreateFileA(lpFileName, 0xC0000000, 3u, 0, 3u, 0, 0);
-	if (v6 == -1)
+		return 0x80070057;
+	v6 = CreateFileA(lpFileName, ERROR_SEVERITY_ERROR, 3u, 0, 3u, 0, 0); // ERROR_SEVERITY_ERROR //0xC0000000
+	if (v6 == INVALID_HANDLE_VALUE)
 	{
 		v7 = GetLastError();
 		if (v7 > 0)

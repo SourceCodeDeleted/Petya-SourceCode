@@ -110,24 +110,24 @@ void __stdcall FreeHeap(LPVOID lpMem)
 }
 
 //----- (681F1038) --------------------------------------------------------
-int __stdcall GetSystemVolumes(void *a1)
+int __stdcall GetSystemVolumes(void *a1) // char*
 {
 	int result; // eax
-	HANDLE v2; // eax
-	signed __int32 v3; // eax
+	HANDLE file_h; // eax
+	signed __int32  error; // eax DWORD
 	unsigned int v4; // kr00_4
 	size_t v5; // edi
 	unsigned int v6; // ecx
-	const char *v7; // esi
+	char *v7; // esi marked as const but couldn't run
 	unsigned int v8; // eax
 	int v9; // edi
 	CHAR Buffer; // [esp+10h] [ebp-26Ch]
 	char Dst; // [esp+11h] [ebp-26Bh]
 	char Src; // [esp+118h] [ebp-164h]
 	char v13; // [esp+119h] [ebp-163h]
-	int OutBuffer; // [esp+220h] [ebp-5Ch]
+	int  OutBuffer; // [esp+220h] [ebp-5Ch] VOLUME_DISK_EXTENTS  
 	int Val; // [esp+228h] [ebp-54h]
-	char DstBuf; // [esp+240h] [ebp-3Ch]
+	char DstBuf; // [esp+240h] [ebp-3Ch] char DstBuf[(sizeof(int) * 8 + 1)] str should be an array long enough to contain any possible value: (sizeof(int)*8+1) for radix=2, i.e. 17 bytes in 16-bits platforms and 33 in 32-bits platforms
 	char v17; // [esp+241h] [ebp-3Bh]
 	__int16 v18; // [esp+25Dh] [ebp-1Fh]
 	char v19; // [esp+25Fh] [ebp-1Dh]
@@ -155,10 +155,10 @@ int __stdcall GetSystemVolumes(void *a1)
 		return 160;
 	memset(a1, 0, 0x104u);
 	strcpy(&Src, "\\\\.\\PhysicalDrive");
-	if (GetSystemDirectoryA(&Buffer, 0x104u)
-		&& (LOBYTE(v25) = Buffer, v2 = CreateFileA(FileName, 0, 3u, 0, 3u, 0, 0), hObject = v2, v2 != -1))
+	if (GetSystemDirectoryA(&Buffer, 0x104u) // MAX_PATH
+		&& (LOBYTE(v25) = Buffer, file_h = CreateFileA(FileName, 0, 3u, 0, 3u, 0, 0), hObject = file_h, file_h != INVALID_HANDLE_VALUE))
 	{
-		if (DeviceIoControl(v2, 0x560000u, 0, 0, &OutBuffer, 0x20u, &BytesReturned, 0))
+		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &OutBuffer, 0x20u, &BytesReturned, NULL))
 		{
 			itoa(Val, &DstBuf, 10);
 			v4 = strlen(&Src);
@@ -193,15 +193,15 @@ int __stdcall GetSystemVolumes(void *a1)
 			}
 			else
 			{
-				v23 = -2147024774;
+				v23 = E_FAIL; // 0x80004005
 			}
 		}
 		else
 		{
-			v3 = GetLastError();
-			if (v3 > 0)
-				v3 = v3 | 0x80070000;
-			v23 = v3;
+			error = GetLastError();
+			if (error > 0)
+				error = error | 0x80070000;
+			v23 = error;
 		}
 		CloseHandle(hObject);
 		result = v23;

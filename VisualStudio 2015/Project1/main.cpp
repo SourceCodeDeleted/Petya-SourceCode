@@ -110,7 +110,7 @@ void __stdcall FreeHeap(LPVOID lpMem)
 }
 
 //----- (681F1038) --------------------------------------------------------
-int __stdcall GetSystemVolumes(void *a1) // char*
+int __stdcall GetSystemVolumes(char *a1) // char*
 {
 	int result; // eax
 	HANDLE file_h; // eax

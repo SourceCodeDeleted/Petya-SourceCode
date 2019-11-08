@@ -292,17 +292,18 @@ int __stdcall CreateFileSetFP(LPCSTR lpFileName, void *Dst)
 }
 
 //----- (681F1384) --------------------------------------------------------
-int  CheckIfFileExists(int a1, LPCSTR lpFileName, LPCVOID lpBuffer)
+int  CheckIfFileExists(int a1, LPCSTR lpFileName, LPCVOID lpBuffer) // Probably to get file length
 {
 	signed __int32 v3; // edi
-	int v4; // esi
+	//int v4; // esi
+	LARGE_INTEGER v4;
 	HANDLE v6; // ebx
 	signed __int32 v7; // eax
 	signed __int32 v8; // eax
 	DWORD NumberOfBytesWritten; // [esp+Ch] [ebp-4h]
 
 	v3 = 0;
-	v4 = a1;
+	v4.QuadPart = a1;// orig v4 = a1 // I am curios if this is the right decision.
 	NumberOfBytesWritten = 0;
 	if (!lpFileName)
 		return 0x80070057;
@@ -316,7 +317,8 @@ int  CheckIfFileExists(int a1, LPCSTR lpFileName, LPCVOID lpBuffer)
 	}
 	else
 	{
-		if (!SetFilePointerEx(v6, (v4 << 9), 0, 0) || !WriteFile(v6, lpBuffer, 0x200u, &NumberOfBytesWritten, 0))
+		v4.QuadPart << 9;  //Not fixed. SetFilePointerEx uses a LARGE_INTEGER
+		if (!SetFilePointerEx(v6, (v4), 0, 0) || !WriteFile(v6, lpBuffer, 0x200u, &NumberOfBytesWritten, 0))
 		{
 			v8 = GetLastError();
 			if (v8 > 0)

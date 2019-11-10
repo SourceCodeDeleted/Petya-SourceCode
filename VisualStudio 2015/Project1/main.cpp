@@ -980,9 +980,12 @@ HANDLE  CheckDriveAndPubKey() // returns thread handle
 {
 	DWORD v0; // ebx
 	signed int v1; // edi
+
+	// same variable was used with 3 different types
 	unsigned int  index; // eax // custom struct probably
 	HANDLE  result; // eax // custom struct probably
 	VOID *buff; // eax // custom struct probably
+
 	WCHAR RootPathName[2]; // [esp+Ch] [ebp-8h]
 	int v4; // [esp+10h] [ebp-4h]
 

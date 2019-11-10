@@ -996,9 +996,9 @@ HANDLE  CheckDriveAndPubKey() // returns thread handle
 		index = (1 << v1); //nb of disks
 		if ((1 << v1) & v0) // check if the bit of GetLogicalDrives was set for the drive number
 		{
-			RootPathName[0] = v1 + 65;
-			RootPathName[1] = 58;
-			v4 = 92;
+			RootPathName[0] = v1 + 65; // integer to drive letter
+			RootPathName[1] = 58; // ":"
+			v4 = 92; // "\"
 			index = GetDriveTypeW(RootPathName);
 			if (index == DRIVE_FIXED)
 			{

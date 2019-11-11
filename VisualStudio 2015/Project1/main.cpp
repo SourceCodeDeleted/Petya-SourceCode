@@ -6495,7 +6495,7 @@ LABEL_18:
 // 6820F144: using guessed type int gPrivLevel;
 
 //----- (681F81BA) --------------------------------------------------------
-BOOL __stdcall CheckPrivsAdjustTokens(LPCWSTR lpName)
+BOOL __stdcall CheckPrivsAdjustTokens(LPCWSTR PrivilegeType) // Premission name.
 {
 	BOOL v1; // ebx
 	HANDLE v2; // eax
@@ -6511,13 +6511,28 @@ BOOL __stdcall CheckPrivsAdjustTokens(LPCWSTR lpName)
 	dwErrCode = 0;
 	TokenHandle = 0;
 	v2 = GetCurrentProcess();
-	if (OpenProcessToken(v2, 0x28u, &TokenHandle))
+	//if (OpenProcessToken(v2, 0x28u, &TokenHandle)) //orig // retn -1 Invalid_Handle_Value
+	if (OpenProcessToken(v2, TOKEN_QUERY|TOKEN_ADJUST_PRIVILEGES, &TokenHandle)) 
 	{
-		if (LookupPrivilegeValueW(0, lpName, NewState.Privileges))
+
+		/* ----- LookupPrivilegeValueW
+		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+		C4 02 00 00 AC F8 F5 02 E0 7C A6 6A 18 41 A7 6A
+		EB 7D A6 6A 00 7E A6 6A 00 00 00 00 EB 7D A6 6A
+		F8 FB 26 03 00 00 00 00 00 00 00 00 00 00 00 00
+		CPU Stack
+		Address   Value      ASCII Comments
+		02F5AE44  /00000000        ; |SystemName = NULL
+		02F5AE48  |6AA74118  A§j  ;  |Privilege = "SeShutdownPrivilege"
+		02F5AE4C  |02F5AE60  `®õ  ; \pUID = 02F5AE60 -> 00
+		*/
+
+		if (LookupPrivilegeValueW(0, PrivilegeType, (PLUID)NewState.Privileges))// struct loaded with SeShutdownPrivilege // retn 13
 		{
+
 			NewState.PrivilegeCount = 1;
 			NewState.Privileges[0].Attributes = 2;
-			v1 = AdjustTokenPrivileges(TokenHandle, 0, &NewState, 0, 0, 0);
+			v1 = AdjustTokenPrivileges(TokenHandle, 0, &NewState, 0, 0, 0); // BOOL // retn 1;
 			dwErrCode = GetLastError();
 			if (dwErrCode)
 				v1 = 0;

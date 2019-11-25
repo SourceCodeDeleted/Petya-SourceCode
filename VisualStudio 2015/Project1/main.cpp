@@ -379,6 +379,7 @@ int __stdcall CryptoAcquireContext(BYTE *pbBuffer, DWORD dwLen)
 	phProv = 0;
 
 	/*
+	First run
 	CPU Stack
 Address   Value      ASCII Comments
 0047A1DC  /0047A1FC  ü¡G
@@ -387,9 +388,6 @@ Address   Value      ASCII Comments
 0047A1E8  |00000001  
 0047A1EC  |F0000000     ð
 	*/
-
-
-
 	if (CryptAcquireContextA(&phProv, 0, 0, 1u, 0xF0000000))
 		goto LABEL_14;
 	v2 = GetLastError();

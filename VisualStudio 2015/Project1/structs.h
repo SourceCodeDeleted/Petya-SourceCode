@@ -9,6 +9,13 @@ Not all will probably be fixed.
 
 */
 
+typedef struct PrimaryStruct {
+
+
+
+};
+
+
 
 typedef struct _PROCESS_INFORMATION {
 

